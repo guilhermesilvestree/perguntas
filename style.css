@@ -1,0 +1,165 @@
+/* === 1. Redefinições Padrão (CSS Reset) === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* === 2. Estilos Gerais === */
+body {
+    background-color: #111;
+    color: #eee;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; 
+}
+
+#game-container {
+    position: relative;
+    width: 100vw; 
+    height: 56.25vw;
+    max-width: 177.78vh;
+    max-height: 100vh;
+    margin: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* === 3. Imagens de Fundo das Fases === */
+.phase-1-bg { background-image: url('assets/fases/1.png'); }
+.phase-2-bg { background-image: url('assets/fases/2.png'); }
+.phase-3-bg { background-image: url('assets/fases/3.png'); }
+
+/* === 4. Hotspots (visíveis em azul) === */
+.hotspot {
+    position: absolute;
+    background-color: rgba(0, 100, 255, 0.4);
+    border: 1px solid cyan;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.hotspot:hover {
+    background-color: rgba(0, 150, 255, 0.6);
+}
+
+/* Posições da Fase 1 - AJUSTE CONFORME SUA IMAGEM */
+#hotspot-1-1 { top: 45%; left: 35%; width: 30%; height: 30%; }
+#hotspot-1-2 { top: 20%; left: 65%; width: 25%; height: 40%; }
+#hotspot-1-3 { top: 25%; left: 10%; width: 15%; height: 50%; }
+#hotspot-1-4 { top: 20%; left: 88%; width: 10%; height: 60%; }
+#hotspot-1-5 { top: 50%; left: 88%; width: 5%; height: 10%; }
+
+/* Posições da Fase 2 - AJUSTE CONFORME SUA IMAGEM */
+#hotspot-2-1 { top: 30%; left: 10%; width: 25%; height: 30%; }
+#hotspot-2-2 { top: 40%; left: 70%; width: 20%; height: 40%; }
+#hotspot-2-3 { top: 50%; left: 30%; width: 35%; height: 25%; }
+#hotspot-2-4 { top: 10%; left: 10%; width: 25%; height: 15%; }
+#hotspot-2-5 { top: 35%; left: 88%; width: 8%; height: 15%; }
+
+/* Posições da Fase 3 - AJUSTE CONFORME SUA IMAGEM */
+#hotspot-3-1 { top: 10%; left: 30%; width: 40%; height: 30%; }
+#hotspot-3-2 { top: 60%; left: 42%; width: 16%; height: 25%; }
+#hotspot-3-3 { top: 5%; left: 45%; width: 10%; height: 10%; }
+#hotspot-3-4 { top: 50%; left: 5%; width: 30%; height: 40%; }
+#hotspot-3-5 { top: 25%; left: 85%; width: 10%; height: 40%; }
+
+/* === 5. Interface === */
+#question-ui {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    background-color: rgba(10, 10, 10, 0.85);
+    border: 2px solid #555;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    color: #eee;
+}
+#question-text { font-size: 1.2em; margin-bottom: 20px; }
+#answer-options button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    background-color: #222;
+    border: 1px solid #444;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#answer-options button:hover { background-color: #00A1FF; border-color: #fff; color: #fff; }
+#inventory {
+    position: absolute;
+    bottom: 20px; left: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border: 1px solid #333;
+    color: #eee;
+}
+#result-screen {
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    padding-top: 20%;
+    color: #eee;
+}
+#result-title { font-size: 3em; color: #00A1FF; }
+#result-description { font-size: 1.5em; max-width: 80%; margin: 20px auto; }
+#result-courses { list-style: none; padding: 0; font-size: 1.2em; }
+#result-courses li { margin-top: 10px; }
+
+.hidden { display: none !important; }
+
+/* Animação de "Ping" para destacar o novo hotspot */
+@keyframes ping {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 150, 255, 0.7);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px 20px rgba(0, 150, 255, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 150, 255, 0);
+    }
+}
+
+.hotspot-active {
+    /* Aplica a animação 'ping' por 1.5 segundos */
+    animation: ping 1.5s ease-out;
+}
+
+/* style.css (ADICIONAR NA SEÇÃO "INTERFACE") */
+
+#dynamic-island {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(10, 10, 10, 0.8);
+    border: 1px solid #444;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #00A1FF;
+    font-size: 1.1em;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+    pointer-events: none; /* Impede que a ilha seja clicável */
+}
+
+#dynamic-island.visible {
+    top: 30px;
+    opacity: 1;
+}
