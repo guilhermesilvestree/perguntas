@@ -148,6 +148,26 @@ body {
     color: #e0e0e0;
 }
 
+/* Estilo para o campo de input da senha */
+#answer-options input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #111;
+    border: none;
+    border-bottom: 2px solid #555;
+    color: #00A1FF;
+    font-family: var(--font-body);
+    font-size: 1.2em;
+    text-align: center;
+    outline: none; /* Remove a borda azul ao clicar */
+    transition: all 0.2s ease;
+}
+
+/* Efeito ao focar no campo da senha */
+#answer-options input[type="text"]:focus {
+    border-bottom: 2px solid #00A1FF;
+}
+
 #answer-options button {
     display: block;
     width: 100%;
