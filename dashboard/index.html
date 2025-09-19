@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Resultados do Teste Vocacional</title>
+    <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="vhs-overlay"></div>
+
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> Dashboard de Resultados</h1>
+            <p>Visão geral das respostas do teste vocacional em tempo real</p>
+        </header>
+
+        <main class="dashboard-grid">
+
+            <section class="card stat-card" id="card-total">
+                <div class="card-header">
+                    <h2><i class="fas fa-poll"></i> Total de Respostas</h2>
+                </div>
+                <div class="card-body">
+                    <p id="total-respostas">0</p>
+                </div>
+            </section>
+
+            <section class="card chart-card" id="card-grafico">
+                 <div class="card-header">
+                    <h2><i class="fas fa-chart-pie"></i> Distribuição de Cursos</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="cursosChart"></canvas>
+                </div>
+            </section>
+            
+            <section class="card course-list-card" id="card-lista">
+                <div class="card-header">
+                    <h2><i class="fas fa-percentage"></i> Recomendações por Curso</h2>
+                </div>
+                <div class="card-body" id="course-list">
+                    </div>
+            </section>
+
+            <section class="card log-card" id="card-log">
+                 <div class="card-header">
+                    <h2><i class="fas fa-history"></i> Log de Respostas Recentes</h2>
+                </div>
+                <div class="card-body">
+                    <div class="log-header">
+                        <span>Curso Recomendado</span>
+                        <span>Horário</span>
+                    </div>
+                    <ul id="log-list">
+                        </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>

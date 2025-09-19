@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap');
+
+:root {
+    --bg-primary: #121212;
+    --bg-secondary: rgba(30, 30, 30, 0.85); /* Fundo do card semi-transparente */
+    --border-color: #444; /* Borda um pouco mais clara */
+    --text-primary: #e0e0e0;
+    --text-secondary: #888;
+    --accent-color: #00A1FF;
+    --warning-color: #FF9F40;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-primary); /* Cor de fallback */
+    color: var(--text-primary);
+    margin: 0;
+    padding: 20px;
+    overflow-x: hidden; /* Previne scroll horizontal */
+}
+
+/* --- NOVOS ESTILOS DE FUNDO --- */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: 
+        linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), 
+        url('https://blog.livrariart.com.br/wp-content/uploads/2024/12/cena-de-crime-desenho-no-chao.webp');
+    background-size: cover;
+    background-position: center center;
+    z-index: -2;
+}
+
+.vhs-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+    background-size: 100% 4px, 100% 100%;
+    animation: vhs-jitter 0.2s infinite linear;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes vhs-jitter {
+    0% { transform: translate(0, 0); } 25% { transform: translate(1px, -1px); } 50% { transform: translate(-1px, 1px); } 75% { transform: translate(1px, 1px); } 100% { transform: translate(0, 0); }
+}
+/* --- FIM DOS ESTILOS DE FUNDO --- */
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative; /* Garante que o container fique acima do fundo */
+    z-index: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+header h1 .fas {
+    margin-right: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+        "log grafico lista"
+        "log total   lista";
+    gap: 25px;
+}
+
+#card-log    { grid-area: log; }
+#card-grafico{ grid-area: grafico; }
+#card-total  { grid-area: total; }
+#card-lista  { grid-area: lista; }
+
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(5px); /* Efeito de desfoque no fundo */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(37, 37, 37, 0.7); /* Cabeçalho também semi-transparente */
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.1em;
+    color: var(--text-primary);
+}
+
+.card-header .fas {
+    margin-right: 10px;
+    color: var(--accent-color);
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+/* Card de Estatística */
+.stat-card .card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stat-card p {
+    font-size: 4.5em;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+/* Card do Gráfico */
+.chart-card .card-body {
+    position: relative;
+    height: 350px;
+}
+
+/* Card da Lista de Cursos */
+.course-list-card .course-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    transition: opacity 0.2s;
+}
+.course-list-card .course-name {
+    width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.course-list-card .percentage-bar {
+    width: 30%;
+    background-color: #333;
+    height: 10px;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+.course-list-card .percentage-bar div {
+    background-color: var(--accent-color);
+    height: 100%;
+    border-radius: 5px;
+}
+.course-list-card .percentage-text {
+    width: 10%;
+    text-align: right;
+    font-weight: 500;
+}
+
+.course-item.zero-recommendation {
+    opacity: 0.5;
+}
+.course-item.zero-recommendation .course-name,
+.course-item.zero-recommendation .percentage-text {
+    color: var(--text-secondary);
+}
+
+/* Estilos do Log */
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    padding: 0 15px 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+#log-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    /* Estilo da barra de rolagem */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) transparent;
+}
+#log-list::-webkit-scrollbar { width: 6px; }
+#log-list::-webkit-scrollbar-track { background: transparent; }
+#log-list::-webkit-scrollbar-thumb { background-color: rgba(0, 161, 255, 0.4); border-radius: 10px; }
+#log-list::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 161, 255, 0.7); }
+
+/* O card de cada item do log */
+.log-item {
+    display: flex;
+    align-items: center;
+    background-color: #2a2a2a;
+    border-radius: 6px;
+    padding: 12px 15px;
+    border-left: 4px solid var(--accent-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.log-item:hover {
+    background-color: #333; /* Fundo levemente mais claro */
+    border-left-color: #33B5FF; /* Borda fica mais brilhante */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3); /* Mantemos a sombra */
+}
+
+/* Container do ícone */
+.log-icon-container {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    background-color: rgba(0, 161, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    color: var(--accent-color);
+}
+
+/* Container para o texto (nome e horário) */
+.log-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-grow: 1; /* Permite que o container cresça e ocupe o espaço */
+    min-width: 0;  /* Essencial para o 'ellipsis' funcionar em flexbox */
+}
+
+.log-course-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;     /* Impede a quebra de linha */
+    overflow: hidden;        /* Esconde o texto que transbordar */
+    text-overflow: ellipsis; /* Adiciona '...' ao final */
+}
+
+.log-timestamp {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
+/* Estilo especial para itens "em progresso" */
+.log-item.in-progress {
+    border-left-color: var(--warning-color);
+}
+.log-item.in-progress .log-icon-container {
+    background-color: rgba(255, 159, 64, 0.1);
+    color: var(--warning-color);
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "log grafico"
+            "log lista"
+            "total total";
+    }
+    #log-list { max-height: 300px; }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "grafico"
+            "total"
+            "lista"
+            "log";
+    }
+}

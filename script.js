@@ -1,41 +1,60 @@
+// A linha correta, com 'doc' e 'updateDoc' incluídos
+import { db } from './firebase.js';
+import { collection, addDoc, serverTimestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. SELEÇÃO DOS ELEMENTOS DO HTML ---
     const gameContainer = document.getElementById('game-container');
-    const dynamicIsland = document.getElementById('dynamic-island');
+    const objectivePanel = document.getElementById('objective-panel');
     const questionUI = document.getElementById('question-ui');
     const questionText = document.getElementById('question-text');
     const answerOptions = document.getElementById('answer-options');
     const fragmentsDisplay = document.getElementById('fragments-display');
     const resultScreen = document.getElementById('result-screen');
+    const courseImage = document.getElementById('course-image');
+    const etecLogo = document.getElementById('etec-logo');
+    const strongPointsList = document.getElementById('strong-points');
+    const restartButton = document.getElementById('restart-button');
 
-    // --- 2. MAPEAMENTO DE CURSOS ---
+    // --- 2. MAPEAMENTO DE CURSOS E DETALHES ---
     const courses = {
         ds: "Desenvolvimento de Sistemas", inf: "Informática para Internet", seg: "Segurança do Trabalho",
         adm: "Administração", mkt: "Marketing", rh: "Recursos Humanos", log: "Logística",
         cex: "Comércio Exterior", jur: "Serviços Jurídicos", enf: "Enfermagem", cui: "Cuidados de Idosos"
     };
 
+    const courseDetails = {
+        ds: { title: "Perfil: O Arquiteto de Sistemas", description: "Você tem uma mente lógica e gosta de construir soluções eficientes para problemas complexos. Seu raciocínio analítico é a chave para inovar.", image: "https://blog.xpeducacao.com.br/wp-content/uploads/2022/12/diferenca-entre-sistema-de-informaca-e-analise-e-desenvolvimento-de-sistema.jpg", strongPoints: ["Raciocínio lógico", "Resolução de problemas", "Inovação tecnológica", "Atenção aos detalhes"] },
+        inf: { title: "Perfil: O Solucionador Digital", description: "Você é prático e rápido para resolver problemas técnicos, fazendo a tecnologia funcionar a seu favor. Adaptabilidade é seu ponto forte.", image: "https://www.icursos.com.br/images/curso_21_topo.jpg", strongPoints: ["Pensamento rápido", "Adaptabilidade digital", "Manutenção de redes", "Suporte técnico"] },
+        seg: { title: "Perfil: O Protetor", description: "Você tem um olhar atento para riscos e normas, garantindo a segurança e o bem-estar de todos. Prevenção é sua prioridade.", image: "https://www.extraconsult.com.br/wp-content/uploads/2024/04/11_blog.png", strongPoints: ["Prevenção de riscos", "Cumprimento de normas", "Atenção à segurança", "Organização"] },
+        adm: { title: "Perfil: O Estrategista", description: "Você tem talento para organizar, liderar e planejar, transformando ideias em realidade. Sua visão sistêmica impulsiona o sucesso.", image: "https://napratica.org.br/wp-content/uploads/2018/09/curso-de-administra%C3%A7%C3%A3o.jpg", strongPoints: ["Liderança", "Planejamento estratégico", "Organização", "Tomada de decisão"] },
+        mkt: { title: "Perfil: O Comunicador", description: "Você sabe como criar mensagens impactantes e conectar ideias com o público certo. Sua criatividade e persuasão geram resultados.", image: "https://cloudinary.hbs.edu/hbsit/image/upload/s--jcW2HPqC--/f_auto,c_fill,h_375,w_750,/v20200101/EA99CC738B99D0AA67987EC2976D550F.jpg", strongPoints: ["Criatividade", "Comunicação eficaz", "Persuasão", "Análise de mercado"] },
+        rh: { title: "Perfil: O Mediador", description: "Você entende de pessoas, sabe como motivar e resolver conflitos para construir equipes fortes. O bem-estar coletivo é sua missão.", image: "https://startupi.com.br/wp-content/uploads/2023/01/Design-sem-nome-2023-01-13T150816.940.jpg", strongPoints: ["Empatia", "Resolução de conflitos", "Comunicação interpessoal", "Desenvolvimento de equipes"] },
+        log: { title: "Perfil: O Otimizador", description: "Você enxerga processos e encontra as melhores rotas e métodos para que tudo funcione com eficiência. Sua mente prática evita desperdícios.", image: "https://patrus.com.br/wp-content/uploads/2017/03/118130-estender-1k-saiba-qual-a-importancia-da-logistica-para-o-crescimento-da-empresa.jpg", strongPoints: ["Otimização de processos", "Planejamento de rotas", "Análise de custos", "Eficiência operacional"] },
+        cex: { title: "Perfil: O Conector Global", description: "Você tem interesse em conectar mercados e culturas, lidando com os desafios do comércio internacional. Sua visão global é um diferencial.", image: "https://irp.cdn-website.com/e9d501ba/dms3rep/multi/O+Que+Faz+um+T%C3%A9cnico+em+Com%C3%A9rcio+Exterior.webp", strongPoints: ["Visão global", "Negociação", "Fluência cultural", "Análise de mercado internacional"] },
+        jur: { title: "Perfil: O Analista de Regras", description: "Você tem uma mente metódica, que entende a importância das regras e dos processos formais. Justiça e conformidade são seus pilares.", image: "https://blog.wyden.com.br/wp-content/uploads/2023/10/still-life-with-scales-justice-1.jpg", strongPoints: ["Raciocínio analítico", "Atenção a normas", "Integridade", "Resolução de problemas legais"] },
+        enf: { title: "Perfil: O Cuidador Essencial", description: "Você tem empatia e a capacidade de oferecer conforto e cuidado técnico em momentos de necessidade. Sua dedicação faz a diferença.", image: "https://www.escoladapaz.com.br/wp-content/uploads/2020/09/shutterstock_90537568.jpg", strongPoints: ["Empatia", "Cuidado técnico", "Resiliência", "Atenção humanizada"] },
+        cui: { title: "Perfil: O Guardião Atencioso", description: "Você se dedica ao bem-estar dos outros, oferecendo suporte, paciência e atenção. Seu lado humano é um farol para quem precisa.", image: "https://infinityhomecareto.com.br/images/blog/6-dicas-e-cuidados.jpg", strongPoints: ["Paciência", "Compreensão", "Dedicacão", "Habilidades de apoio emocional"] }
+    };
+
     // --- 3. BANCO DE DADOS COMPLETO DO JOGO ---
     const gameData = [
-        // --- FASE 1 ---
-        { phase: 1, hotspotId: 'hotspot-1-1', questionText: "Para iniciar o projeto da forma mais eficaz e evitar desperdício de tempo, qual é a primeira ação fundamental?", answers: [{ text: "Analisar dados e pesquisas sobre os problemas reais da comunidade.", points: { ds: 3, inf: 2 } }, { text: "Fazer um brainstorm de soluções criativas.", points: { mkt: 1 } }, { text: "Perguntar ao grupo o que eles se sentem mais motivados a fazer.", points: { rh: 1 } }], fragment: "7G", hint: "A resposta ativou o quadro branco. Precisamos investigar os símbolos que apareceram." },
-        { phase: 1, hotspotId: 'hotspot-1-2', questionText: "Você tem dados sobre 3 problemas. Qual é o critério mais estratégico para escolher em qual deles focar?", answers: [{ text: "O que apresentar o melhor equilíbrio entre impacto e viabilidade (recursos/tempo).", points: { adm: 3, log: 2 } }, { text: "O que usar a tecnologia mais inovadora para impressionar.", points: { ds: 1 } }, { text: "O que for mais fácil de executar, para garantir a conclusão.", points: { seg: 1 } }], fragment: "H3", hint: "Boa decisão. Agora que o caminho foi definido, o armário de metal parece ter algo útil." },
-        { phase: 1, hotspotId: 'hotspot-1-3', questionText: "Um colega sugere quebrar uma regra importante do desafio. Qual a sua posição?", answers: [{ text: "Explico que seguir as regras é essencial para a validade e segurança do projeto.", points: { jur: 3, seg: 2 } }, { text: "Digo que entendo a pressa, mas que as consequências de quebrar as regras são piores.", points: { rh: 1 } }, { text: "Analiso se a regra pode ser contornada de forma inteligente e permitida.", points: { adm: 1 } }], fragment: "K9", hint: "Manter a integridade é crucial. Agora, nosso foco deve ser a porta de saída." },
-        { phase: 1, hotspotId: 'hotspot-1-4', questionText: "O grupo precisa decidir se o projeto será para poucas pessoas com grande impacto ou muitas pessoas com pequeno impacto. Qual a decisão mais sensata?", answers: [{ text: "Focar em um nicho menor para garantir a qualidade e a entrega completa do prometido.", points: { adm: 3, mkt: 2 } }, { text: "Tentar alcançar o maior número de pessoas, mesmo que o benefício individual seja pequeno.", points: { mkt: 1 } }, { text: "A decisão depende dos nossos recursos. Vamos analisar o que conseguimos fazer bem feito.", points: { log: 1 } }], fragment: "4B", hint: "Escopo definido. Falta apenas a senha final. O painel ao lado da porta está ativo." },
-        { phase: 1, hotspotId: 'hotspot-1-5', questionText: "O painel exige a senha final da fase. Junte os fragmentos.", answers: [], fragment: "SENHA", password: "7GH3K94B", hint: "Conseguimos! A porta se abriu para a oficina. A próxima fase é a execução." },
-        // --- FASE 2 ---
-        { phase: 2, hotspotId: 'hotspot-2-1', questionText: "Uma tarefa crucial está atrasada, comprometendo o cronograma. Qual a ação mais produtiva?", answers: [{ text: "Conversar com o responsável para entender o problema e oferecer ajuda prática.", points: { rh: 3, cui: 2 } }, { text: "Reunir o grupo e reorganizar o cronograma de forma realista, redistribuindo tarefas.", points: { adm: 2, log: 1 } }, { text: "Assumir a tarefa para garantir que seja feita, mesmo que te sobrecarregue.", points: { seg: 1 } }], fragment: "M4", hint: "O cronograma está ajustado. Mas a impressora 3D começou a piscar uma luz de erro." },
-        { phase: 2, hotspotId: 'hotspot-2-2', questionText: "Uma falha técnica paralisa o projeto. Ninguém sabe consertar. O que fazer primeiro?", answers: [{ text: "Isolar o problema, pesquisar a documentação técnica e procurar soluções em fóruns.", points: { inf: 3, ds: 2 } }, { text: "Comunicar a falha à gestão do projeto e pedir ajuda de um especialista.", points: { adm: 1 } }, { text: "Manter a calma do grupo e focar em outras tarefas que não dependam da falha.", points: { rh: 1 } }], fragment: "K1", hint: "Problema técnico contornado. O protótipo na bancada agora pode ser trabalhado." },
-        { phase: 2, hotspotId: 'hotspot-2-3', questionText: "Você percebe que só há material para UMA tentativa de consertar o protótipo. Como você usa esse último recurso?", answers: [{ text: "Proponho que o grupo planeje e ensaie cada passo antes de tocar no material.", points: { adm: 3, log: 2 } }, { text: "Sugiro que a pessoa mais calma e cuidadosa do grupo faça o conserto.", points: { enf: 1 } }, { text: "Uso meu conhecimento técnico para criar um molde ou guia para garantir a perfeição.", points: { ds: 2, inf: 1 } }], fragment: "N4", hint: "O protótipo está melhorando, mas a tensão na sala é visível. As ferramentas na parede parecem pesadas." },
-        { phase: 2, hotspotId: 'hotspot-2-4', questionText: "A pressão causa uma briga entre dois colegas. O clima fica péssimo. O que você faz?", answers: [{ text: "Mediar uma conversa entre os dois, focando nos fatos e no objetivo do projeto.", points: { rh: 3, jur: 2 } }, { text: "Dar apoio emocional a ambos, mas separadamente, para não piorar o clima.", points: { enf: 1, cui: 1 } }, { text: "Ignorar a briga e focar nas entregas, esperando que eles se resolvam.", points: { ds: 0 } }], fragment: "S", hint: "Com o conflito resolvido, o caminho está livre para o painel final da porta." },
-        { phase: 2, hotspotId: 'hotspot-2-5', questionText: "O painel precisa ser recalibrado com a senha correta. Junte os fragmentos.", answers: [], fragment: "SENHA", password: "M4K1N4S", hint: "Oficina concluída! A porta range e se abre para um palco escuro. É hora da apresentação." },
-        // --- FASE 3 ---
-        { phase: 3, hotspotId: 'hotspot-3-1', questionText: "Qual formato de apresentação tem mais chance de comunicar o valor do projeto de forma clara e profissional?", answers: [{ text: "Uma demonstração ao vivo do protótipo, provando que ele funciona.", points: { ds: 3, inf: 2 } }, { text: "Uma apresentação com storytelling e depoimentos de quem seria beneficiado.", points: { mkt: 2, cui: 1 } }, { text: "Slides com métricas, projeções de custo e retorno sobre o investimento.", points: { adm: 2, log: 1 } }], fragment: "F1", hint: "Formato decidido. O púlpito no centro do palco parece ser o próximo passo." },
-        { phase: 3, hotspotId: 'hotspot-3-2', questionText: "Minutos antes de apresentar, o arquivo principal da apresentação é corrompido. Qual o plano de contingência mais seguro?", answers: [{ text: "Usar o backup salvo em um serviço de nuvem, que foi preparado previamente.", points: { seg: 3, inf: 2 } }, { text: "Improvisar a apresentação sem slides, confiando no conhecimento do grupo.", points: { rh: 1 } }, { text: "Pedir para apresentar por último para tentar refazer os slides rapidamente.", points: { adm: 1 } }], fragment: "N4", hint: "Crise contornada. O holofote acima do palco treme, chamando sua atenção." },
-        { phase: 3, hotspotId: 'hotspot-3-3', questionText: "Durante a apresentação, um 'juiz invisível' faz uma crítica dura. Como você reage?", answers: [{ text: "Agradeço a pergunta: 'Excelente observação. Vamos considerar para melhorar.'", points: { rh: 2, adm: 1 } }, { text: "Tento defender o projeto: 'Entendo seu ponto, mas nossa decisão foi baseada em X e Y.'", points: { jur: 2 } }, { text: "Anoto a crítica e pergunto mais: 'Poderia detalhar sua preocupação?'", points: { ds: 2, inf: 1 } }], fragment: "L3", hint: "A resposta impressionou. O silêncio das cadeiras vazias parece guardar o último segredo." },
-        { phase: 3, hotspotId: 'hotspot-3-4', questionText: "Você percebe que seu colega de grupo, que é tímido, travou de nervoso. O que você faz?", answers: [{ text: "Faço uma pergunta simples e direta a ele sobre a parte que ele domina, para 'quebrar o gelo'.", points: { enf: 3, cui: 2, rh: 1 } }, { text: "Assumo a fala dele de forma natural, para não quebrar o ritmo da apresentação.", points: { adm: 1 } }, { text: "Sussurro a primeira frase da fala dele para ajudá-lo a lembrar.", points: { sc: 1 } }], fragment: "", hint: "O time está unido. Apenas a porta final resta." },
-        { phase: 3, hotspotId: 'hotspot-3-5', questionText: "O desafio acabou. Você coletou as pistas. É hora de abrir a porta final.", answers: [], fragment: "SENHA", password: "F1N4L3", hint: "Parabéns! Você concluiu o desafio." }
+        { phase: 1, hotspotId: 'hotspot-1-1', questionText: "Para iniciar o projeto da forma mais eficaz e evitar desperdício de tempo, qual é a primeira ação fundamental?", answers: [{ text: "Analisar dados e pesquisas sobre os problemas reais da comunidade.", points: { ds: 3, inf: 2 } }, { text: "Fazer um brainstorm de soluções criativas.", points: { mkt: 1 } }, { text: "Perguntar ao grupo o que eles se sentem mais motivados a fazer.", points: { rh: 1 } }], fragment: "E", hint: "Investigar os símbolos que apareceram no quadro branco." },
+        { phase: 1, hotspotId: 'hotspot-1-2', questionText: "Você tem dados sobre 3 problemas. Qual é o critério mais estratégico para escolher em qual deles focar?", answers: [{ text: "O que apresentar o melhor equilíbrio entre impacto e viabilidade (recursos/tempo).", points: { adm: 3, log: 2 } }, { text: "O que usar a tecnologia mais inovadora para impressionar.", points: { ds: 1 } }, { text: "O que for mais fácil de executar, para garantir a conclusão.", points: { seg: 1 } }], fragment: "T", hint: "O caminho foi definido. O armário de metal parece ter algo útil." },
+        { phase: 1, hotspotId: 'hotspot-1-3', questionText: "Um colega sugere quebrar uma regra importante do desafio. Qual a sua posição?", answers: [{ text: "Explico que seguir as regras é essencial para a validade e segurança do projeto.", points: { jur: 3, seg: 2 } }, { text: "Digo que entendo a pressa, mas que as consequências de quebrar as regras são piores.", points: { rh: 1 } }, { text: "Analiso se a regra pode ser contornada de forma inteligente e permitida.", points: { adm: 1 } }], fragment: "E", hint: "Integridade mantida. O foco agora deve ser a porta de saída." },
+        { phase: 1, hotspotId: 'hotspot-1-4', questionText: "O grupo precisa decidir se o projeto será para poucas pessoas com grande impacto ou muitas pessoas com pequeno impacto. Qual a decisão mais sensata?", answers: [{ text: "Focar em um nicho menor para garantir a qualidade e a entrega completa do prometido.", points: { adm: 3, mkt: 2 } }, { text: "Tentar alcançar o maior número de pessoas, mesmo que o benefício individual seja pequeno.", points: { mkt: 1 } }, { text: "A decisão depende dos nossos recursos. Vamos analisar o que conseguimos fazer bem feito.", points: { log: 1 } }], fragment: "C", hint: "Escopo definido. O painel ao lado da porta está ativo." },
+        { phase: 1, hotspotId: 'hotspot-1-5', questionText: "O painel exige a senha final da fase. Os fragmentos formam a palavra.", answers: [], fragment: "SENHA", password: "ETEC", hint: "Porta aberta! A próxima fase é a execução na oficina." },
+        { phase: 2, hotspotId: 'hotspot-2-1', questionText: "Uma tarefa crucial está atrasada, comprometendo o cronograma. Qual a ação mais produtiva?", answers: [{ text: "Conversar com o responsável para entender o problema e oferecer ajuda prática.", points: { rh: 3, cui: 2 } }, { text: "Reunir o grupo e reorganizar o cronograma de forma realista, redistribuindo tarefas.", points: { adm: 2, log: 1 } }, { text: "Assumir a tarefa para garantir que seja feita, mesmo que te sobrecarregue.", points: { seg: 1 } }], fragment: "C", hint: "Cronograma ajustado. A impressora 3D começou a piscar uma luz de erro." },
+        { phase: 2, hotspotId: 'hotspot-2-2', questionText: "Uma falha técnica paralisa o projeto. Ninguém sabe consertar. O que fazer primeiro?", answers: [{ text: "Isolar o problema, pesquisar a documentação técnica e procurar soluções em fóruns.", points: { inf: 3, ds: 2 } }, { text: "Comunicar a falha à gestão do projeto e pedir ajuda de um especialista.", points: { adm: 1 } }, { text: "Manter a calma do grupo e focar em outras tarefas que não dependam da falha.", points: { rh: 1 } }], fragment: "UR", hint: "Problema técnico contornado. O protótipo na bancada agora pode ser trabalhado." },
+        { phase: 2, hotspotId: 'hotspot-2-3', questionText: "Você percebe que só há material para UMA tentativa de consertar o protótipo. Como você usa esse último recurso?", answers: [{ text: "Proponho que o grupo planeje e ensaie cada passo antes de tocar no material.", points: { adm: 3, log: 2 } }, { text: "Sugiro que a pessoa mais calma e cuidadosa do grupo faça o conserto.", points: { enf: 1 } }, { text: "Uso meu conhecimento técnico para criar um molde ou guia para garantir a perfeição.", points: { ds: 2, inf: 1 } }], fragment: "S", hint: "O protótipo está melhorando. A tensão é visível, hora de checar as ferramentas na parede." },
+        { phase: 2, hotspotId: 'hotspot-2-4', questionText: "A pressão causa uma briga entre dois colegas. O clima fica péssimo. O que você faz?", answers: [{ text: "Mediar uma conversa entre os dois, focando nos fatos e no objetivo do projeto.", points: { rh: 3, jur: 2 } }, { text: "Dar apoio emocional a ambos, mas separadamente, para não piorar o clima.", points: { enf: 1, cui: 1 } }, { text: "Ignorar a briga e focar nas entregas, esperando que eles se resolvam.", points: { ds: 0 } }], fragment: "OS", hint: "Conflito resolvido. O caminho está livre para o painel final da porta." },
+        { phase: 2, hotspotId: 'hotspot-2-5', questionText: "O painel precisa ser recalibrado com a senha correta. Junte os fragmentos.", answers: [], fragment: "SENHA", password: "CURSOS", hint: "Oficina concluída! A porta se abre para um palco escuro. É hora da apresentação." },
+        { phase: 3, hotspotId: 'hotspot-3-1', questionText: "Qual formato de apresentação tem mais chance de comunicar o valor do projeto de forma clara e profissional?", answers: [{ text: "Uma demonstração ao vivo do protótipo, provando que ele funciona.", points: { ds: 3, inf: 2 } }, { text: "Uma apresentação com storytelling e depoimentos de quem seria beneficiado.", points: { mkt: 2, cui: 1 } }, { text: "Slides com métricas, projeções de custo e retorno sobre o investimento.", points: { adm: 2, log: 1 } }], fragment: "V", hint: "Formato decidido. O púlpito no centro do palco é o próximo passo." },
+        { phase: 3, hotspotId: 'hotspot-3-2', questionText: "Minutos antes de apresentar, o arquivo principal da apresentação é corrompido. Qual o plano de contingência mais seguro?", answers: [{ text: "Usar o backup salvo em um serviço de nuvem, que foi preparado previamente.", points: { seg: 3, inf: 2 } }, { text: "Improvisar a apresentação sem slides, confiando no conhecimento do grupo.", points: { rh: 1 } }, { text: "Pedir para apresentar por último para tentar refazer os slides rapidamente.", points: { adm: 1 } }], fragment: "E", hint: "Crise contornada. O holofote acima do palco treme, chamando sua atenção." },
+        { phase: 3, hotspotId: 'hotspot-3-3', questionText: "Durante a apresentação, um 'juiz invisível' faz uma crítica dura. Como você reage?", answers: [{ text: "Agradeço a pergunta: 'Excelente observação. Vamos considerar para melhorar.'", points: { rh: 2, adm: 1 } }, { text: "Tento defender o projeto: 'Entendo seu ponto, mas nossa decisão foi baseada em X e Y.'", points: { jur: 2 } }, { text: "Anoto a crítica e pergunto mais: 'Poderia detalhar sua preocupação?'", points: { ds: 2, inf: 1 } }], fragment: "N", hint: "A resposta impressionou. O silêncio das cadeiras vazias parece guardar o último segredo." },
+        { phase: 3, hotspotId: 'hotspot-3-4', questionText: "Você percebe que seu colega de grupo, que é tímido, travou de nervoso. O que você faz?", answers: [{ text: "Faço uma pergunta simples e direta a ele sobre a parte que ele domina, para 'quebrar o gelo'.", points: { enf: 3, cui: 2, rh: 1 } }, { text: "Assumo a fala dele de forma natural, para não quebrar o ritmo da apresentação.", points: { adm: 1 } }, { text: "Sussurro a primeira frase da fala dele para ajudá-lo a lembrar.", points: { enf: 1 } }], fragment: "HA", hint: "O time está unido. Apenas a porta final resta." },
+        { phase: 3, hotspotId: 'hotspot-3-5', questionText: "O desafio acabou. Você coletou as pistas. É hora de abrir a porta final.", answers: [], fragment: "SENHA", password: "VENHA", hint: "Parabéns! Você concluiu o desafio." }
     ];
 
     // --- 4. ESTADO DO JOGO ---
@@ -43,17 +62,61 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPhase: 1,
         questionIndex: 0,
         scores: {},
-        fragments: []
+        fragments: [],
+        sessionId: null
     };
 
     // --- 5. FUNÇÕES PRINCIPAIS DO JOGO ---
 
+    // NOVO: Funções para salvar e limpar o estado do jogo no navegador
+    function saveState() {
+        localStorage.setItem('vocationalGameState', JSON.stringify(gameState));
+    }
+
+    function clearState() {
+        localStorage.removeItem('vocationalGameState');
+    }
+
+    // Funções do Firebase
     function initializeScores() {
         for (const key in courses) {
             gameState.scores[key] = 0;
         }
     }
+    
+    async function createInProgressSession() {
+        try {
+            const docRef = await addDoc(collection(db, "resultados"), {
+                status: 'in_progress',
+                horario: serverTimestamp()
+            });
+            gameState.sessionId = docRef.id;
+            console.log("Sessão 'em progresso' criada com ID: ", gameState.sessionId);
+        } catch (e) {
+            console.error("Erro ao criar sessão: ", e);
+        }
+    }
 
+    async function updateResultInFirebase(courseKey, suggestions) {
+        if (!gameState.sessionId) {
+            console.error("ID da sessão não encontrado. Não é possível atualizar.");
+            return;
+        }
+        try {
+            const resultDocRef = doc(db, "resultados", gameState.sessionId);
+            await updateDoc(resultDocRef, {
+                status: 'completed',
+                cursoRecomendado: courseKey,
+                outrasSugestoes: suggestions,
+                horario: serverTimestamp()
+            });
+            console.log("Resultado finalizado para o ID: ", gameState.sessionId);
+        } catch (e) {
+            console.error("Erro ao atualizar documento: ", e);
+        }
+    }
+    
+    // Funções de UI
     function setupPhase(phaseNumber) {
         gameContainer.className = '';
         gameContainer.classList.add(`phase-${phaseNumber}-bg`);
@@ -68,6 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const hotspot = document.getElementById(currentQuestionData.hotspotId);
             if(hotspot) {
                 hotspot.classList.remove('hidden');
+                hotspot.classList.add('hotspot-active');
+                setTimeout(() => { hotspot.classList.remove('hotspot-active'); }, 1500);
                 hotspot.onclick = () => showQuestion(gameState.questionIndex);
             }
         }
@@ -90,6 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
             input.type = "text";
             input.placeholder = "Digite a senha da fase";
             input.autocomplete = "off";
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkPassword(input.value);
+                }
+            });
             const button = document.createElement('button');
             button.textContent = "Destrancar";
             button.onclick = () => checkPassword(input.value);
@@ -101,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         questionUI.classList.remove('hidden');
     }
     
+    // MODIFICADO: Salva o estado após responder
     function selectAnswer(points, fragment) {
         for (const course in points) {
             if (gameState.scores.hasOwnProperty(course)) {
@@ -117,32 +188,36 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (gameState.questionIndex < gameData.length) {
             const nextQuestionData = gameData[gameState.questionIndex];
-            showDynamicIsland(nextQuestionData.hint);
+            updateObjective(nextQuestionData.hint);
             activateNextHotspot();
+            saveState(); // <-- SALVA O ESTADO
         } else {
             endGame();
         }
     }
 
+    // MODIFICADO: Salva o estado após acertar a senha
     function checkPassword(passwordAttempt) {
         const currentQuestionData = gameData[gameState.questionIndex];
         const correctPassword = currentQuestionData.password;
 
-        if (passwordAttempt.toUpperCase() === correctPassword) {
+        if (passwordAttempt.toUpperCase() === correctPassword.toUpperCase()) {
             questionUI.classList.add('hidden');
             gameState.questionIndex++;
             const nextQuestionData = gameData[gameState.questionIndex];
             if(nextQuestionData) {
-                 showDynamicIsland(nextQuestionData.hint);
+                 updateObjective(nextQuestionData.hint);
             }
             advanceToNextPhase();
+            saveState(); // <-- SALVA O ESTADO
         } else {
-            alert("Senha Incorreta!");
+            alert("Senha Incorreta! Tente novamente.");
             const inputField = document.querySelector('#answer-options input');
             if (inputField) inputField.value = "";
         }
     }
 
+    // Funções de Lógica
     function advanceToNextPhase() {
         const nextQuestionData = gameData[gameState.questionIndex];
         if (nextQuestionData) {
@@ -158,20 +233,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateInventory() {
-        fragmentsDisplay.textContent = gameState.fragments.join(' | ');
+        fragmentsDisplay.textContent = gameState.fragments.join('');
     }
 
-    function showDynamicIsland(hintText) {
-        if (!hintText) return;
-        dynamicIsland.textContent = hintText;
-        dynamicIsland.classList.add('visible');
-        setTimeout(() => {
-            dynamicIsland.classList.remove('visible');
-        }, 5000);
+    function updateObjective(hintText) {
+        if (!hintText) {
+            objectivePanel.style.opacity = '0';
+            return;
+        }
+        objectivePanel.style.opacity = '1';
+        objectivePanel.innerHTML = `${hintText}`;
     }
 
+    // MODIFICADO: Limpa o estado ao finalizar
     function endGame() {
-        document.querySelectorAll('.hotspot, #question-ui, #inventory, #dynamic-island').forEach(el => el.classList.add('hidden'));
+        clearState(); // <-- LIMPA O ESTADO AO FINALIZAR
+        document.querySelectorAll('.hotspot, #question-ui, #inventory, #objective-panel').forEach(el => el.classList.add('hidden'));
         
         let highestScore = -1;
         let recommendedCourse = null;
@@ -188,46 +265,130 @@ document.addEventListener('DOMContentLoaded', () => {
             .slice(0, 3)
             .map(([course, score]) => courses[course]);
 
+        updateResultInFirebase(recommendedCourse, otherSuggestions); 
         displayResults(recommendedCourse, otherSuggestions);
     }
-
+    
+    // Função de exibir resultados
     function displayResults(courseKey, suggestions) {
-        const resultsData = {
-            ds: { title: "Perfil: O Arquiteto de Sistemas", description: "Você tem uma mente lógica e gosta de construir soluções eficientes para problemas complexos." },
-            adm: { title: "Perfil: O Estrategista", description: "Você tem talento para organizar, liderar e planejar, transformando ideias em realidade." },
-            rh: { title: "Perfil: O Mediador", description: "Você entende de pessoas, sabe como motivar e resolver conflitos para construir equipes fortes." },
-            log: { title: "Perfil: O Otimizador", description: "Você enxerga processos e encontra as melhores rotas e métodos para que tudo funcione com eficiência." },
-            mkt: { title: "Perfil: O Comunicador", description: "Você sabe como criar mensagens impactantes e conectar ideias com o público certo." },
-            inf: { title: "Perfil: O Solucionador Digital", description: "Você é prático e rápido para resolver problemas técnicos e fazer a tecnologia funcionar a seu favor." },
-            seg: { title: "Perfil: O Protetor", description: "Você tem um olhar atento para riscos e normas, garantindo a segurança e o bem-estar de todos." },
-            jur: { title: "Perfil: O Analista de Regras", description: "Você tem uma mente metódica, que entende a importância das regras e dos processos formais." },
-            enf: { title: "Perfil: O Cuidador", description: "Você tem empatia e a capacidade de oferecer conforto e cuidado técnico em momentos de necessidade." },
-            cui: { title: "Perfil: O Guardião", description: "Você se dedica ao bem-estar dos outros, oferecendo suporte, paciência e atenção." }
+        const resultProfile = courseDetails[courseKey] || {
+            title: "Seu Perfil é Versátil!",
+            description: "Você demonstrou uma grande variedade de habilidades e pode se adaptar a diversas áreas.",
+            image: "",
+            strongPoints: ["Adaptabilidade", "Versatilidade", "Curiosidade"]
         };
-
-        const mainCourseName = courses[courseKey] || "N/A";
-        const resultProfile = resultsData[courseKey] || { title: "Seu Perfil é Versátil!", description: "Você demonstrou uma grande variedade de habilidades." };
         
-        document.getElementById('result-title').textContent = `Curso Recomendado: ${mainCourseName}`;
+        document.getElementById('result-title').textContent = `Curso Recomendado: ${courses[courseKey]}`;
         document.getElementById('result-description').textContent = resultProfile.description;
+        
+        if (resultProfile.image) {
+            courseImage.src = resultProfile.image;
+            courseImage.classList.remove('hidden');
+        } else {
+            courseImage.classList.add('hidden');
+        }
+
+        etecLogo.classList.remove('hidden');
+
+        strongPointsList.innerHTML = '';
+        if (resultProfile.strongPoints && resultProfile.strongPoints.length > 0) {
+            resultProfile.strongPoints.forEach(point => {
+                const li = document.createElement('li');
+                li.textContent = point;
+                strongPointsList.appendChild(li);
+            });
+            document.getElementById('strong-points-container').classList.remove('hidden');
+        } else {
+            document.getElementById('strong-points-container').classList.add('hidden');
+        }
         
         const courseList = document.getElementById('result-courses');
         courseList.innerHTML = '';
-        suggestions.forEach(course => {
-            const li = document.createElement('li');
-            li.textContent = course;
-            courseList.appendChild(li);
-        });
+        if (suggestions.length > 0) {
+            suggestions.forEach(course => {
+                const li = document.createElement('li');
+                li.textContent = course;
+                courseList.appendChild(li);
+            });
+        } else {
+            courseList.innerHTML = '<li>Nenhuma outra sugestão no momento.</li>';
+        }
 
         resultScreen.classList.remove('hidden');
     }
 
-    // --- 6. INÍCIO DO JOGO ---
-    function startGame() {
+    // --- 6. INÍCIO E LÓGICA DE RESTAURAÇÃO DO JOGO ---
+    
+    // MODIFICADO: Função 'startGame' agora é apenas para um jogo NOVO
+    async function startGame() {
+        console.log("Iniciando novo jogo.");
         initializeScores();
+        resultScreen.classList.add('hidden');
+        document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
+        
+        // Cria a sessão no Firebase e salva o estado inicial
+        await createInProgressSession(); 
+        saveState();
+        
         setupPhase(1);
         activateNextHotspot();
+        updateObjective("Encontrar a primeira pista.");
+    }
+    
+    // NOVO: Função para carregar o jogo salvo ou iniciar um novo
+    function loadAndResumeGame() {
+        const savedStateJSON = localStorage.getItem('vocationalGameState');
+
+        if (savedStateJSON) {
+            gameState = JSON.parse(savedStateJSON);
+            console.log("Jogo salvo encontrado. Retomando...", gameState);
+            
+            // Restaura a interface para o estado salvo
+            resultScreen.classList.add('hidden');
+            document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
+            
+            setupPhase(gameState.currentPhase);
+            updateInventory();
+            
+            // Garante que o índice da pergunta não esteja fora dos limites
+            const currentQuestion = gameData[gameState.questionIndex];
+            if(currentQuestion){
+                updateObjective(currentQuestion.hint);
+                activateNextHotspot();
+            } else {
+                // Se o estado salvo for inválido (ex: jogo já terminou), limpa e reinicia
+                console.warn("Estado salvo inválido, iniciando novo jogo.");
+                clearState();
+                startGame();
+            }
+
+        } else {
+            startGame();
+        }
     }
 
-    startGame();
+    // MODIFICADO: Limpa o estado salvo antes de reiniciar
+    restartButton.addEventListener('click', () => {
+        clearState(); // <-- LIMPA O ESTADO
+        gameState = {
+            currentPhase: 1, questionIndex: 0, scores: {},
+            fragments: [], sessionId: null
+        };
+        resultScreen.classList.add('hidden');
+        console.log("redirecting to home to restart the game.");
+        window.location.replace("/");
+    });
+
+    // Eventos de debug
+    window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'p') {
+            endGame();
+        }
+        if (e.key === '1') displayResults('ds', ['Informática para Internet', 'Segurança do Trabalho']);
+        if (e.key === '2') displayResults('adm', ['Logística', 'Marketing']);
+        if (e.key === '3') displayResults('enf', ['Cuidados de Idosos', 'Recursos Humanos']);   
+    });
+
+    // PONTO DE ENTRADA: Inicia a lógica de carregar ou começar um novo jogo
+    loadAndResumeGame();
 });

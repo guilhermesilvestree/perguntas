@@ -1,3 +1,5 @@
+/* style.css (VERSÃO FINAL) */
+
 /* === 1. Redefinições Padrão e Variáveis de Fonte === */
 * {
     margin: 0;
@@ -6,21 +8,32 @@
 }
 
 :root {
-    --font-title: 'Special Elite', monospace; /* Fonte de Título (máquina de escrever) */
-    --font-body: 'Roboto Mono', monospace;  /* Fonte de Leitura (mais limpa) */
+    --font-title: 'Special Elite', monospace;
+    --font-body: 'Roboto Mono', monospace;
 }
 
 /* === 2. Estilos Gerais === */
 body {
     background-color: #000;
     color: #a2a2a2; 
-    font-family: var(--font-body); /* Fonte padrão para o corpo do texto */
+    font-family: var(--font-body);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
     overflow: hidden; 
+
+    /* Animação de Fade Out */
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+
+    /* Animação de Fade In ao carregar a página */
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+body.fade-out {
+    opacity: 0;
 }
 
 /* === 3. Container Principal e Efeito VHS === */
@@ -56,11 +69,7 @@ body {
 }
 
 @keyframes vhs-jitter {
-    0% { top: 0; left: 0; }
-    25% { top: 1px; left: -1px; }
-    50% { top: -1px; left: 1px; }
-    75% { top: 1px; left: 1px; }
-    100% { top: 0; left: 0; }
+    0% { top: 0; left: 0; } 25% { top: 1px; left: -1px; } 50% { top: -1px; left: 1px; } 75% { top: 1px; left: 1px; } 100% { top: 0; left: 0; }
 }
 
 /* === 4. Imagens de Fundo === */
@@ -68,7 +77,7 @@ body {
 .phase-2-bg { background-image: url('assets/fases/2.png'); }
 .phase-3-bg { background-image: url('assets/fases/3.png'); }
 
-/* === 5. Hotspots (visíveis em azul) === */
+/* === 5. Hotspots === */
 .hotspot {
     position: absolute;
     background-color: rgba(0, 102, 255, 0.09);
@@ -77,46 +86,31 @@ body {
     transition: background-color 0.3s;
     z-index: 3;
 }
-.hotspot:hover {
-    background-color: rgba(0, 149, 255, 0.13);
-}
+.hotspot:hover { background-color: rgba(0, 149, 255, 0.13); }
 
-/* Posições da Fase 1 - AJUSTE CONFORME SUA IMAGEM */
+/* Posições - AJUSTE CONFORME SUA IMAGEM */
 #hotspot-1-1 { top: 45%; left: 35%; width: 30%; height: 30%; }
 #hotspot-1-2 { top: 20%; left: 65%; width: 25%; height: 40%; }
 #hotspot-1-3 { top: 25%; left: 10%; width: 15%; height: 50%; }
 #hotspot-1-4 { top: 20%; left: 88%; width: 10%; height: 60%; }
 #hotspot-1-5 { top: 50%; left: 88%; width: 5%; height: 10%; }
-
-/* Posições da Fase 2 - AJUSTE CONFORME SUA IMAGEM */
 #hotspot-2-1 { top: 30%; left: 10%; width: 25%; height: 30%; }
 #hotspot-2-2 { top: 40%; left: 70%; width: 20%; height: 40%; }
 #hotspot-2-3 { top: 50%; left: 30%; width: 35%; height: 25%; }
 #hotspot-2-4 { top: 10%; left: 10%; width: 25%; height: 15%; }
 #hotspot-2-5 { top: 35%; left: 88%; width: 8%; height: 15%; }
-
-/* Posições da Fase 3 - AJUSTE CONFORME SUA IMAGEM */
 #hotspot-3-1 { top: 10%; left: 30%; width: 40%; height: 30%; }
 #hotspot-3-2 { top: 60%; left: 42%; width: 16%; height: 25%; }
 #hotspot-3-3 { top: 5%; left: 45%; width: 10%; height: 10%; }
 #hotspot-3-4 { top: 50%; left: 5%; width: 30%; height: 40%; }
 #hotspot-3-5 { top: 25%; left: 85%; width: 10%; height: 40%; }
 
-/* Animação de "Ping" para destacar o novo hotspot */
-@keyframes ping {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 150, 255, 0.7); }
-    70% { transform: scale(1.1); box-shadow: 0 0 10px 20px rgba(0, 150, 255, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 150, 255, 0); }
-}
+@keyframes ping { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 150, 255, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 10px 20px rgba(0, 150, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 150, 255, 0); } }
+.hotspot-active { animation: ping 1.5s ease-out; }
 
-.hotspot-active {
-    animation: ping 1.5s ease-out;
-}
-
-/* === 6. Nova Interface de Investigação === */
+/* === 6. Interface de Jogo === */
 #question-ui {
-    position: absolute;
-    top: 50%; left: 50%;
+    position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     width: 900px;
     background-color: rgba(20, 22, 25, 0.85);
@@ -129,125 +123,205 @@ body {
     box-shadow: 0 0 30px rgba(0,0,0,0.8);
     z-index: 10;
 }
-
 #question-ui::before {
     content: "// CASO: PROJETO VOCACIONAL //";
-    position: absolute;
-    top: 10px;
-    left: 25px;
-    color: #00A1FF;
-    font-size: 0.9em;
+    position: absolute; top: 10px; left: 25px;
+    color: #00A1FF; font-size: 0.9em;
     font-family: var(--font-body);
     text-align: left;
 }
-
-#question-text {
-    font-family: var(--font-title);
-    font-size: 1.5em;
-    margin-bottom: 25px;
-    color: #e0e0e0;
-}
-
-/* Estilo para o campo de input da senha */
+#question-text { font-family: var(--font-title); font-size: 1.5em; margin-bottom: 25px; color: #e0e0e0; }
 #answer-options input[type="text"] {
-    width: 100%;
-    padding: 15px;
+    width: 100%; padding: 15px;
     background-color: #111;
     border: none;
     border-bottom: 2px solid #555;
     color: #00A1FF;
-    font-family: var(--font-body);
-    font-size: 1.2em;
-    text-align: center;
-    outline: none; /* Remove a borda azul ao clicar */
-    transition: all 0.2s ease;
+    font-family: var(--font-body); font-size: 1.2em;
+    text-align: center; outline: none; transition: all 0.2s ease;
 }
-
-/* Efeito ao focar no campo da senha */
-#answer-options input[type="text"]:focus {
-    border-bottom: 2px solid #00A1FF;
-}
-
+#answer-options input[type="text"]:focus { border-bottom: 2px solid #00A1FF; }
 #answer-options button {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    margin-top: 10px;
+    display: block; width: 100%;
+    padding: 15px; margin-top: 10px;
     background: linear-gradient(#3a3a3a, #2a2a2a);
     border: 1px solid #1a1a1a;
     border-bottom: 2px solid #555;
     color: #a2a2a2;
-    font-family: var(--font-body);
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    font-family: var(--font-body); font-size: 1.1em;
+    cursor: pointer; transition: all 0.2s ease;
 }
-
-#answer-options button:hover {
-    background: linear-gradient(#4a4a4a, #3a3a3a);
-    color: #00A1FF;
-    border-bottom: 2px solid #00a2ff60;
-}
-
+#answer-options button:hover { background: linear-gradient(#4a4a4a, #3a3a3a); color: #00A1FF; border-bottom: 2px solid #00a2ff60; }
 #inventory {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
+    position: absolute; bottom: 20px; left: 20px;
     background-color: rgba(0, 0, 0, 0.8);
     padding: 10px 15px;
     border: 1px solid #333;
     border-left: 3px solid #00A1FF;
-    font-family: var(--font-body);
-    font-size: 1.1em;
+    font-family: var(--font-body); font-size: 1.1em;
     z-index: 10;
 }
-
-#dynamic-island {
+#objective-panel {
     position: absolute;
-    top: 20px; left: 50%;
+    top: 20px;
+    left: 50%;
     transform: translateX(-50%);
-    background-color: #111;
-    border: 1px solid #333;
-    border-radius: 20px;
-    padding: 10px 20px;
+    width: auto;
+    max-width: 700px;
+    padding: 10px 25px;
+    background-color: rgba(20, 22, 25, 0.85);
+    border: 1px solid #4a4a4a;
+    border-top: 2px solid #00A1FF;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    z-index: 10;
     color: #00A1FF;
     font-family: var(--font-body);
     font-size: 1.1em;
-    z-index: 100;
-    opacity: 0;
-    transition: all 0.5s ease-in-out;
+    text-align: center;
     pointer-events: none;
-    box-shadow: 0 0 15px rgba(0, 162, 255, 1);
+    transition: opacity 0.5s;
 }
 
-#dynamic-island.visible {
-    top: 30px;
-    opacity: 1;
+/* Adiciona um "título" para o painel de objetivo */
+#objective-panel::before {
+    content: "OBJETIVO ATUAL:";
+    font-size: 0.8em;
+    color: #ffffff88;
+    display: block;
+    margin-bottom: 5px;
 }
 
+/* === 7. TELA DE RESULTADO (ESTILO 'ICE WHITE') === */
 #result-screen {
     position: absolute;
     width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
+    background: radial-gradient(ellipse at center, rgba(10, 20, 30, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
     backdrop-filter: blur(5px);
-    text-align: center;
-    padding-top: 15%;
-    color: #e0e0e0;
+    color: #f0f0f0; /* Branco Gelo para textos */
     z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    opacity: 0;
+    animation: fadeIn 1s 0.5s forwards;
 }
+
+@keyframes fadeIn { to { opacity: 1; } }
 
 #result-title { 
     font-family: var(--font-title);
-    font-size: 3.5em; 
-    color: #00A1FF; 
-    text-shadow: 0 0 10px #00A1FF;
-}
-#result-description, #result-courses {
-    font-family: var(--font-body);
+    font-size: 3.2em; 
+    color: #ffffff; /* Branco Puro */
+    text-shadow: 0 0 15px #00A1FF, 0 0 5px #ffffff;
+    margin-bottom: 15px;
+    animation: fadeInDown 1s forwards;
 }
 
-#result-description { font-size: 1.8em; max-width: 80%; margin: 30px auto; }
-#result-courses { list-style: none; padding: 0; font-size: 1.3em; }
-#result-courses li { margin-top: 15px; color: #a2a2a2; }
+#result-description {
+    font-family: var(--font-body);
+    font-size: 1.2em; 
+    max-width: 60%; 
+    margin-bottom: 30px;
+    text-align: center;
+    color: #cccccc; /* Cinza claro */
+    animation: fadeInDown 1.5s forwards;
+}
+
+#result-center-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 30px;
+    animation: fadeInUp 1.5s forwards;
+}
+
+#course-image {
+    width: 380px;
+    height: 230px;
+    object-fit: cover;
+    border: 2px solid #00a2ff88;
+    box-shadow: 0 0 25px rgba(0, 161, 255, 0.6);
+}
+
+#strong-points-container {
+    background-color: transparent;
+    border: 1px solid #ffffff22;
+    padding: 20px;
+    width: 420px;
+    text-align: left;
+}
+#strong-points-container h3 {
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #00a2ff88;
+    padding-bottom: 10px;
+}
+#strong-points { list-style: none; }
+#strong-points li {
+    font-family: var(--font-body);
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #f0f0f0;
+}
+#strong-points li::before { content: "» "; color: #00A1FF; }
+
+#result-bottom-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 840px;
+    margin-bottom: 40px;
+    animation: fadeInUp 2s forwards;
+}
+
+#suggestions-container h3 {
+    font-family: var(--font-title);
+    font-size: 1.5em;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+#result-courses { list-style: none; padding: 0; font-family: var(--font-body); font-size: 1.1em; text-align: left; }
+#result-courses li { margin-top: 8px; color: #a2a2a2; }
+
+#etec-logo {
+    max-width: 120px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+#etec-logo:hover { opacity: 1; }
+
+#restart-button {
+    padding: 15px 30px;
+    background: linear-gradient(#00A1FF, #0077c7);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-family: var(--font-title);
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 20px rgba(0, 161, 255, 0.5);
+    animation: fadeInUp 2.5s forwards;
+}
+#restart-button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(0, 161, 255, 0.8);
+}
 
 .hidden { display: none !important; }
+
+/* Animações de entrada para a tela de resultado */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}

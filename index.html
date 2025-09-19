@@ -2,52 +2,194 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Desafio do Projeto - Teste Vocacional</title>
-    <link rel="stylesheet" href="style.css">
-        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Vocacional - Início</title>
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+    <meta property="og:title" content="Projeto Vocacional - Aceite o Desafio">
+    <meta property="og:description" content="Descubra seu perfil profissional em uma simulação interativa. Suas decisões revelarão suas aptidões. Você está pronto?">
+    <meta property="og:image" content="https://png.pngtree.com/png-vector/20230811/ourmid/pngtree-cartoon-detective-looking-through-a-magnifying-glass-vector-png-image_6843299.png">
+    <meta property="og:type" content="website">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
-</head> 
+
+    <style>
+    :root {
+    --font-title: 'Special Elite', monospace;
+    --font-body: 'Roboto Mono', monospace;
+    --bg-primary: #121212;
+    --text-primary: #e0e0e0;
+    --text-secondary: #888;
+    --accent-color: #00A1FF;
+    }
+
+    body {
+    /* REMOVIDO: A imagem de fundo agora está no vídeo */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    }
+
+    body.fade-out {
+        opacity: 0;
+    }
+
+    /* --- NOVO: Estilo para o Vídeo de Fundo --- */
+    #bg-video {
+        position: fixed; /* Fica fixo na tela */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centraliza o vídeo */
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -1; /* Coloca o vídeo atrás de todo o conteúdo */
+        object-fit: cover; /* Garante que o vídeo cubra a tela sem distorcer */
+    }
+    /* --- FIM DA SEÇÃO --- */
+
+    .intro-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(20, 22, 25, 0.8);
+        backdrop-filter: blur(3px);
+    }
+
+    .content-wrapper {
+        max-width: 800px;
+        width: 90%;
+        padding: 40px;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Efeito de sobreposição VHS */
+    .vhs-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+            linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+        background-size: 100% 4px, 100% 100%;
+        animation: vhs-jitter 0.2s infinite linear;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    @keyframes vhs-jitter {
+        0% { transform: translate(0, 0); } 25% { transform: translate(1px, -1px); } 50% { transform: translate(-1px, 1px); } 75% { transform: translate(1px, 1px); } 100% { transform: translate(0, 0); }
+    }
+
+    /* Título com efeito Glitch */
+    h1.glitch {
+        font-family: var(--font-title);
+        font-size: 3.5em;
+        color: var(--text-primary);
+        position: relative;
+        margin-bottom: 25px;
+    }
+    h1.glitch::before,
+    h1.glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+    }
+    h1.glitch::before { left: 2px; text-shadow: -2px 0 var(--accent-color); animation: glitch-anim-1 2.5s infinite linear reverse; }
+    h1.glitch::after { left: -2px; text-shadow: 2px 0 #FF6384; animation: glitch-anim-2 2s infinite linear reverse; }
+
+    @keyframes glitch-anim-1 { 0%, 100% { clip-path: inset(55% 0 23% 0); } 25% { clip-path: inset(12% 0 8% 0); } 50% { clip-path: inset(50% 0 45% 0); } 75% { clip-path: inset(80% 0 10% 0); } }
+    @keyframes glitch-anim-2 { 0%, 100% { clip-path: inset(8% 0 75% 0); } 25% { clip-path: inset(90% 0 2% 0); } 50% { clip-path: inset(25% 0 60% 0); } 75% { clip-path: inset(60% 0 30% 0); } }
+
+    /* Texto de introdução */
+    .intro-text {
+        font-size: 1.2em;
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .mystery-text {
+        font-size: 1.3em;
+        color: var(--text-primary);
+        line-height: 1.6;
+        margin-bottom: 40px;
+        font-weight: 700;
+    }
+
+    /* Botão de Ação */
+    .cta-button {
+        font-family: var(--font-title);
+        font-size: 1.5em;
+        text-decoration: none;
+        color: var(--accent-color);
+        background-color: transparent;
+        border: 2px solid var(--accent-color);
+        padding: 15px 40px;
+        box-shadow: 0 0 0 0 rgba(0, 161, 255, 0.7);
+    }
+
+    .cta-button:hover {
+        color: #fff;
+        background-color: var(--accent-color);
+        box-shadow: 0 0 20px 5px rgba(0, 161, 255, 0.5);
+        transform: translateY(-3px);
+    }
+
+    /* --- NOVO: Media Query para Responsividade --- */
+    @media (max-width: 768px) {
+        h1.glitch {
+            font-size: 2.5em; /* Reduz o tamanho do título */
+        }
+        .intro-text, .mystery-text {
+            font-size: 1.1em; /* Reduz o tamanho do texto */
+        }
+        .cta-button {
+            font-size: 1.2em; /* Reduz o tamanho do botão */
+            padding: 12px 30px;
+        }
+    }
+ </style>
+</head>
 <body>
-    <div id="game-container">
-        <div id="dynamic-island"></div> </div>
-        <div id="hotspot-1-1" class="hotspot"></div>
-        <div id="hotspot-1-2" class="hotspot hidden"></div>
-        <div id="hotspot-1-3" class="hotspot hidden"></div>
-        <div id="hotspot-1-4" class="hotspot hidden"></div>
-        <div id="hotspot-1-5" class="hotspot hidden"></div>
-
-        <div id="hotspot-2-1" class="hotspot hidden"></div>
-        <div id="hotspot-2-2" class="hotspot hidden"></div>
-        <div id="hotspot-2-3" class="hotspot hidden"></div>
-        <div id="hotspot-2-4" class="hotspot hidden"></div>
-        <div id="hotspot-2-5" class="hotspot hidden"></div>
-
-        <div id="hotspot-3-1" class="hotspot hidden"></div>
-        <div id="hotspot-3-2" class="hotspot hidden"></div>
-        <div id="hotspot-3-3" class="hotspot hidden"></div>
-        <div id="hotspot-3-4" class="hotspot hidden"></div>
-        <div id="hotspot-3-5" class="hotspot hidden"></div>
-
-        <div id="question-ui" class="hidden">
-            <p id="question-text"></p>
-            <div id="answer-options"></div>
-        </div>
-
-        <div id="inventory">
-            <h3>Fragmentos de Senha:</h3>
-            <span id="fragments-display"></span>
-        </div>
-
-        <div id="result-screen" class="hidden">
-            <h2 id="result-title"></h2>
-            <p id="result-description"></p>
-            <h3>Outras Sugestões:</h3>
-            <ul id="result-courses"></ul>
+    <video autoplay loop muted playsinline id="bg-video" poster="assets/fundo_inicio.png">
+        <source src="assets/fundo_video.mp4" type="video/mp4">
+        Seu navegador não suporta a tag de vídeo.
+    </video>
+    <div class="vhs-overlay"></div>
+    <div class="intro-container">
+        <div class="content-wrapper">
+            <h1 class="glitch" data-text="[PROJETO VOCACIONAL]">
+                [PROJETO VOCACIONAL]
+            </h1>
+            <p class="intro-text">
+                Você foi selecionado para uma simulação. Suas decisões em cenários de pressão revelarão suas verdadeiras aptidões.
+            </p>
+            <p class="mystery-text">
+                O que você fará quando o tempo estiver acabando? Cada escolha importa. Seu futuro profissional pode depender disso.
+            </p>
+            <a href="game.html" class="cta-button">ACEITAR O DESAFIO</a>
         </div>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
