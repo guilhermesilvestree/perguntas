@@ -337,35 +337,40 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // NOVO: Função para carregar o jogo salvo ou iniciar um novo
     function loadAndResumeGame() {
-        const savedStateJSON = localStorage.getItem('vocationalGameState');
+    const savedStateJSON = localStorage.getItem('vocationalGameState');
 
-        if (savedStateJSON) {
-            gameState = JSON.parse(savedStateJSON);
-            console.log("Jogo salvo encontrado. Retomando...", gameState);
-            
-            // Restaura a interface para o estado salvo
-            resultScreen.classList.add('hidden');
-            document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
-            
-            setupPhase(gameState.currentPhase);
-            updateInventory();
-            
-            // Garante que o índice da pergunta não esteja fora dos limites
-            const currentQuestion = gameData[gameState.questionIndex];
-            if(currentQuestion){
-                updateObjective(currentQuestion.hint);
-                activateNextHotspot();
-            } else {
-                // Se o estado salvo for inválido (ex: jogo já terminou), limpa e reinicia
-                console.warn("Estado salvo inválido, iniciando novo jogo.");
-                clearState();
-                startGame();
-            }
+    if (savedStateJSON) {
+        gameState = JSON.parse(savedStateJSON);
+        console.log("Jogo salvo encontrado. Retomando...", gameState);
+        
+        // Restaura a interface para o estado salvo
+        resultScreen.classList.add('hidden');
+        document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
+        
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Em vez de chamar setupPhase(), aplicamos apenas o visual da fase.
+        // Isso evita que gameState.fragments seja resetado para [].
+        gameContainer.className = '';
+        gameContainer.classList.add(`phase-${gameState.currentPhase}-bg`);
+        
+        // Agora, o updateInventory() será chamado com os fragmentos corretos que foram carregados.
+        updateInventory();
+        // --- FIM DA CORREÇÃO ---
 
+        const currentQuestion = gameData[gameState.questionIndex];
+        if(currentQuestion){
+            updateObjective(currentQuestion.hint);
+            activateNextHotspot();
         } else {
+            console.warn("Estado salvo inválido, iniciando novo jogo.");
+            clearState();
             startGame();
         }
+
+    } else {
+        startGame();
     }
+}
 
     // MODIFICADO: Limpa o estado salvo antes de reiniciar
     restartButton.addEventListener('click', () => {
