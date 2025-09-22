@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const strongPointsList = document.getElementById('strong-points');
     const restartButton = document.getElementById('restart-button');
 
+    // --- MODIFICADO: Efeitos Sonoros ---
+    const clickSound = new Audio('./assets/sounds/click.wav');
+    const unlockSound = new Audio('./assets/sounds/unlock.wav');
+    const passwordSound = new Audio('./assets/sounds/password.wav');
+
     // --- 2. MAPEAMENTO DE CURSOS E DETALHES ---
     const courses = {
         ds: "Desenvolvimento de Sistemas", inf: "Informática para Internet", seg: "Segurança do Trabalho",
@@ -68,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. FUNÇÕES PRINCIPAIS DO JOGO ---
 
-    // NOVO: Funções para salvar e limpar o estado do jogo no navegador
     function saveState() {
         localStorage.setItem('vocationalGameState', JSON.stringify(gameState));
     }
@@ -77,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('vocationalGameState');
     }
 
-    // Funções do Firebase
     function initializeScores() {
         for (const key in courses) {
             gameState.scores[key] = 0;
@@ -91,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 horario: serverTimestamp()
             });
             gameState.sessionId = docRef.id;
-            console.log("Sessão 'em progresso' criada com ID: ", gameState.sessionId);
         } catch (e) {
             console.error("Erro ao criar sessão: ", e);
         }
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function updateResultInFirebase(courseKey, suggestions) {
         if (!gameState.sessionId) {
-            console.error("ID da sessão não encontrado. Não é possível atualizar.");
+            console.error("ID da sessão não encontrado.");
             return;
         }
         try {
@@ -110,13 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 outrasSugestoes: suggestions,
                 horario: serverTimestamp()
             });
-            console.log("Resultado finalizado para o ID: ", gameState.sessionId);
         } catch (e) {
             console.error("Erro ao atualizar documento: ", e);
         }
     }
     
-    // Funções de UI
     function setupPhase(phaseNumber) {
         gameContainer.className = '';
         gameContainer.classList.add(`phase-${phaseNumber}-bg`);
@@ -138,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- MODIFICADO ---
+    // Adicionado o som ao focar no campo de senha
     function showQuestion(index) {
         const questionData = gameData[index];
         questionText.textContent = questionData.questionText;
@@ -155,6 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
             input.type = "text";
             input.placeholder = "Digite a senha da fase";
             input.autocomplete = "off";
+            
+            // <-- NOVO: Adiciona o evento para tocar o som
+            input.addEventListener('focus', () => {
+                passwordSound.play();
+            });
+
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     checkPassword(input.value);
@@ -171,8 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
         questionUI.classList.remove('hidden');
     }
     
-    // MODIFICADO: Salva o estado após responder
     function selectAnswer(points, fragment) {
+        clickSound.play().catch(error => {
+            console.error("Erro ao tocar o som de clique:", error);
+        });
         for (const course in points) {
             if (gameState.scores.hasOwnProperty(course)) {
                 gameState.scores[course] += points[course];
@@ -190,18 +200,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const nextQuestionData = gameData[gameState.questionIndex];
             updateObjective(nextQuestionData.hint);
             activateNextHotspot();
-            saveState(); // <-- SALVA O ESTADO
+            saveState();
         } else {
             endGame();
         }
     }
 
-    // MODIFICADO: Salva o estado após acertar a senha
     function checkPassword(passwordAttempt) {
         const currentQuestionData = gameData[gameState.questionIndex];
         const correctPassword = currentQuestionData.password;
 
         if (passwordAttempt.toUpperCase() === correctPassword.toUpperCase()) {
+            unlockSound.play();
             questionUI.classList.add('hidden');
             gameState.questionIndex++;
             const nextQuestionData = gameData[gameState.questionIndex];
@@ -209,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  updateObjective(nextQuestionData.hint);
             }
             advanceToNextPhase();
-            saveState(); // <-- SALVA O ESTADO
+            saveState();
         } else {
             alert("Senha Incorreta! Tente novamente.");
             const inputField = document.querySelector('#answer-options input');
@@ -217,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Funções de Lógica
     function advanceToNextPhase() {
         const nextQuestionData = gameData[gameState.questionIndex];
         if (nextQuestionData) {
@@ -245,9 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
         objectivePanel.innerHTML = `${hintText}`;
     }
 
-    // MODIFICADO: Limpa o estado ao finalizar
     function endGame() {
-        clearState(); // <-- LIMPA O ESTADO AO FINALIZAR
+        clearState();
         document.querySelectorAll('.hotspot, #question-ui, #inventory, #objective-panel').forEach(el => el.classList.add('hidden'));
         
         let highestScore = -1;
@@ -269,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayResults(recommendedCourse, otherSuggestions);
     }
     
-    // Função de exibir resultados
     function displayResults(courseKey, suggestions) {
         const resultProfile = courseDetails[courseKey] || {
             title: "Seu Perfil é Versátil!",
@@ -319,14 +326,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 6. INÍCIO E LÓGICA DE RESTAURAÇÃO DO JOGO ---
     
-    // MODIFICADO: Função 'startGame' agora é apenas para um jogo NOVO
     async function startGame() {
-        console.log("Iniciando novo jogo.");
         initializeScores();
         resultScreen.classList.add('hidden');
         document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
         
-        // Cria a sessão no Firebase e salva o estado inicial
         await createInProgressSession(); 
         saveState();
         
@@ -335,56 +339,44 @@ document.addEventListener('DOMContentLoaded', () => {
         updateObjective("Precisamos verificar se o sofá a algo estranho foi deixado aqui por um motivo.");
     }
     
-    // NOVO: Função para carregar o jogo salvo ou iniciar um novo
     function loadAndResumeGame() {
-    const savedStateJSON = localStorage.getItem('vocationalGameState');
+        const savedStateJSON = localStorage.getItem('vocationalGameState');
 
-    if (savedStateJSON) {
-        gameState = JSON.parse(savedStateJSON);
-        console.log("Jogo salvo encontrado. Retomando...", gameState);
-        
-        // Restaura a interface para o estado salvo
-        resultScreen.classList.add('hidden');
-        document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
-        
-        // --- CORREÇÃO APLICADA AQUI ---
-        // Em vez de chamar setupPhase(), aplicamos apenas o visual da fase.
-        // Isso evita que gameState.fragments seja resetado para [].
-        gameContainer.className = '';
-        gameContainer.classList.add(`phase-${gameState.currentPhase}-bg`);
-        
-        // Agora, o updateInventory() será chamado com os fragmentos corretos que foram carregados.
-        updateInventory();
-        // --- FIM DA CORREÇÃO ---
+        if (savedStateJSON) {
+            gameState = JSON.parse(savedStateJSON);
+            
+            resultScreen.classList.add('hidden');
+            document.querySelectorAll('#inventory, #objective-panel').forEach(el => el.classList.remove('hidden'));
+            
+            gameContainer.className = '';
+            gameContainer.classList.add(`phase-${gameState.currentPhase}-bg`);
+            
+            updateInventory();
 
-        const currentQuestion = gameData[gameState.questionIndex];
-        if(currentQuestion){
-            updateObjective(currentQuestion.hint);
-            activateNextHotspot();
+            const currentQuestion = gameData[gameState.questionIndex];
+            if(currentQuestion){
+                updateObjective(currentQuestion.hint);
+                activateNextHotspot();
+            } else {
+                clearState();
+                startGame();
+            }
+
         } else {
-            console.warn("Estado salvo inválido, iniciando novo jogo.");
-            clearState();
             startGame();
         }
-
-    } else {
-        startGame();
     }
-}
 
-    // MODIFICADO: Limpa o estado salvo antes de reiniciar
     restartButton.addEventListener('click', () => {
-        clearState(); // <-- LIMPA O ESTADO
+        clearState();
         gameState = {
             currentPhase: 1, questionIndex: 0, scores: {},
             fragments: [], sessionId: null
         };
         resultScreen.classList.add('hidden');
-        console.log("redirecting to home to restart the game.");
         window.location.replace("/perguntas");
     });
 
-    // Eventos de debug
     window.addEventListener('keydown', (e) => {
         if (e.key.toLowerCase() === 'p') {
             endGame();
@@ -394,6 +386,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === '3') displayResults('enf', ['Cuidados de Idosos', 'Recursos Humanos']);   
     });
 
-    // PONTO DE ENTRADA: Inicia a lógica de carregar ou começar um novo jogo
     loadAndResumeGame();
 });
