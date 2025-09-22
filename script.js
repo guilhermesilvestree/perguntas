@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         resultScreen.classList.add('hidden');
         console.log("redirecting to home to restart the game.");
-        window.location.replace("/");
+        window.location.replace("/perguntas");
     });
 
     // Eventos de debug
