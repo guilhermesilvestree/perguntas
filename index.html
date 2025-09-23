@@ -15,45 +15,41 @@
 
     <style>
     :root {
-    --font-title: 'Special Elite', monospace;
-    --font-body: 'Roboto Mono', monospace;
-    --bg-primary: #121212;
-    --text-primary: #e0e0e0;
-    --text-secondary: #888;
-    --accent-color: #00A1FF;
+        --font-title: 'Special Elite', monospace;
+        --font-body: 'Roboto Mono', monospace;
+        --bg-primary: #121212;
+        --text-primary: #e0e0e0;
+        --text-secondary: #888;
+        --accent-color: #00A1FF;
     }
 
     body {
-    /* REMOVIDO: A imagem de fundo agora está no vídeo */
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-    
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
     }
 
     body.fade-out {
         opacity: 0;
     }
 
-    /* --- NOVO: Estilo para o Vídeo de Fundo --- */
     #bg-video {
-        position: fixed; /* Fica fixo na tela */
+        position: fixed;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%); /* Centraliza o vídeo */
+        transform: translate(-50%, -50%);
         min-width: 100%;
         min-height: 100%;
         width: auto;
         height: auto;
-        z-index: -1; /* Coloca o vídeo atrás de todo o conteúdo */
-        object-fit: cover; /* Garante que o vídeo cubra a tela sem distorcer */
+        z-index: -1;
+        object-fit: cover;
     }
-    /* --- FIM DA SEÇÃO --- */
 
     .intro-container {
         width: 100%;
@@ -76,14 +72,13 @@
         text-align: center;
     }
 
-    /* Efeito de sobreposição VHS */
     .vhs-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: 
+        background:
             linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
             linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
         background-size: 100% 4px, 100% 100%;
@@ -96,7 +91,6 @@
         0% { transform: translate(0, 0); } 25% { transform: translate(1px, -1px); } 50% { transform: translate(-1px, 1px); } 75% { transform: translate(1px, 1px); } 100% { transform: translate(0, 0); }
     }
 
-    /* Título com efeito Glitch */
     h1.glitch {
         font-family: var(--font-title);
         font-size: 3.5em;
@@ -121,7 +115,6 @@
     @keyframes glitch-anim-1 { 0%, 100% { clip-path: inset(55% 0 23% 0); } 25% { clip-path: inset(12% 0 8% 0); } 50% { clip-path: inset(50% 0 45% 0); } 75% { clip-path: inset(80% 0 10% 0); } }
     @keyframes glitch-anim-2 { 0%, 100% { clip-path: inset(8% 0 75% 0); } 25% { clip-path: inset(90% 0 2% 0); } 50% { clip-path: inset(25% 0 60% 0); } 75% { clip-path: inset(60% 0 30% 0); } }
 
-    /* Texto de introdução */
     .intro-text {
         font-size: 1.2em;
         color: var(--text-secondary);
@@ -137,7 +130,6 @@
         font-weight: 700;
     }
 
-    /* Botão de Ação */
     .cta-button {
         font-family: var(--font-title);
         font-size: 1.5em;
@@ -147,6 +139,9 @@
         border: 2px solid var(--accent-color);
         padding: 15px 40px;
         box-shadow: 0 0 0 0 rgba(0, 161, 255, 0.7);
+        cursor: pointer;
+        display: block;
+        margin-bottom: 25px; /* Added margin to separate from the new button */
     }
 
     .cta-button:hover {
@@ -155,18 +150,58 @@
         box-shadow: 0 0 20px 5px rgba(0, 161, 255, 0.5);
         transform: translateY(-3px);
     }
+    
+    /* --- NEW STYLES FOR WARNING AND FULLSCREEN --- */
+    .immersion-controls {
+        text-align: center;
+        margin-top: 30px;
+        border-top: 1px solid var(--text-secondary);
+        padding-top: 20px;
+    }
 
-    /* --- NOVO: Media Query para Responsividade --- */
+    .warning-text {
+        font-size: 1em;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .fullscreen-button {
+        font-family: var(--font-body);
+        font-size: 1em;
+        color: var(--text-secondary);
+        background-color: transparent;
+        border: 1px solid var(--text-secondary);
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: color 0.3s, background-color 0.3s;
+    }
+
+    .fullscreen-button:hover {
+        color: var(--text-primary);
+        background-color: var(--text-secondary);
+    }
+    
+    .f11-text {
+        font-size: 0.9em;
+        color: var(--text-secondary);
+        margin-top: 10px;
+    }
+    /* --- END OF NEW STYLES --- */
+
+
     @media (max-width: 768px) {
         h1.glitch {
-            font-size: 2.5em; /* Reduz o tamanho do título */
+            font-size: 2.5em;
         }
         .intro-text, .mystery-text {
-            font-size: 1.1em; /* Reduz o tamanho do texto */
+            font-size: 1.1em;
         }
         .cta-button {
-            font-size: 1.2em; /* Reduz o tamanho do botão */
+            font-size: 1.2em;
             padding: 12px 30px;
+        }
+        .warning-text, .fullscreen-button {
+            font-size: 0.9em;
         }
     }
  </style>
@@ -189,7 +224,32 @@
                 O que você fará quando o tempo estiver acabando? Cada escolha importa. Seu futuro profissional pode depender disso.
             </p>
             <a href="game.html" class="cta-button">ACEITAR O DESAFIO</a>
-        </div>
+            
+            <div class="immersion-controls">
+                <p class="warning-text">
+                    <strong>Aviso:</strong> Para uma melhor experiência, use fones de ouvido.
+                </p>
+                <button id="fullscreenBtn" class="fullscreen-button">Ativar Tela Cheia</button>
+                <p class="f11-text">(Ou pressione F11)</p>
+            </div>
+            </div>
     </div>
+
+    <script>
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const docElem = document.documentElement;
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (docElem.requestFullscreen) {
+                docElem.requestFullscreen();
+            } else if (docElem.mozRequestFullScreen) { /* Firefox */
+                docElem.mozRequestFullScreen();
+            } else if (docElem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                docElem.webkitRequestFullscreen();
+            } else if (docElem.msRequestFullscreen) { /* IE/Edge */
+                docElem.msRequestFullscreen();
+            }
+        });
+    </script>
 </body>
 </html>
