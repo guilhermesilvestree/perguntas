@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MODIFICADO: Efeitos Sonoros ---
     const clickSound = new Audio('./assets/sounds/click.wav');
     const unlockSound = new Audio('./assets/sounds/unlock.wav');
+    const sirenSound = new Audio('./assets/sounds/sirene.wav'); // <-- ADICIONE ESTA LINHA
     const passwordSound = new Audio('./assets/sounds/password.wav');
 
     // --- 2. MAPEAMENTO DE CURSOS E DETALHES ---
@@ -279,6 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function displayResults(courseKey, suggestions) {
+        sirenSound.volume = 0.3; // Define um volume baixo (30%)
+        sirenSound.play().catch(error => {
+            console.error("Erro ao tocar o som de sirene:", error);
+        });
         const resultProfile = courseDetails[courseKey] || {
             title: "Seu Perfil é Versátil!",
             description: "Você demonstrou uma grande variedade de habilidades e pode se adaptar a diversas áreas.",
