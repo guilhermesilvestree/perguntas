@@ -192,13 +192,13 @@ body.fade-out {
     margin-bottom: 5px;
 }
 
-/* === 7. TELA DE RESULTADO (ESTILO 'ICE WHITE') === */
 #result-screen {
     position: absolute;
     width: 100%; height: 100%;
-    background: radial-gradient(ellipse at center, rgba(10, 20, 30, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
-    backdrop-filter: blur(5px);
-    color: #f0f0f0; /* Branco Gelo para textos */
+    /* Gradiente radial mais escuro e com mais brilho para o fundo */
+    background: radial-gradient(ellipse at center, rgba(8, 15, 25, 0.98) 0%, rgba(0, 0, 0, 0.99) 100%);
+    backdrop-filter: blur(8px); /* Blur um pouco mais intenso */
+    color: #e0e0e0; /* Cinza claro para textos base */
     z-index: 20;
     display: flex;
     flex-direction: column;
@@ -207,128 +207,183 @@ body.fade-out {
     padding: 40px;
     opacity: 0;
     animation: fadeIn 1s 0.5s forwards;
+    /* Efeito de partícula de fundo sutil (se quiser adicionar) */
+    /* background-image: url('data:image/svg+xml;base64,...'); (Exemplo, se quiser um pattern) */
 }
 
 @keyframes fadeIn { to { opacity: 1; } }
 
 #result-title { 
     font-family: var(--font-title);
-    font-size: 3.2em; 
-    color: #ffffff; /* Branco Puro */
-    text-shadow: 0 0 15px #00A1FF, 0 0 5px #ffffff;
-    margin-bottom: 15px;
+    font-size: 3.5em; /* Ligeiramente maior */
+    color: #fff; /* Branco Puro */
+    /* Múltiplas sombras para um efeito neon/brilhante */
+    text-shadow: 
+        0 0 5px rgba(0, 161, 255, 0.5), /* Sombra azul clara */
+        0 0 15px rgba(0, 161, 255, 0.8), /* Sombra azul mais intensa */
+        0 0 30px rgba(0, 161, 255, 0.6), /* Brilho azul */
+        0 0 40px rgba(0, 161, 255, 0.4); /* Halo azul */
+    margin-bottom: 20px; /* Um pouco mais de espaço */
     animation: fadeInDown 1s forwards;
 }
 
 #result-description {
     font-family: var(--font-body);
-    font-size: 1.2em; 
-    max-width: 60%; 
-    margin-bottom: 30px;
+    font-size: 1.3em; /* Ligeiramente maior */
+    max-width: 65%; /* Levemente mais largo para descrição */
+    margin-bottom: 40px; /* Mais espaço para o próximo bloco */
     text-align: center;
-    color: #cccccc; /* Cinza claro */
+    color: #b0b0b0; /* Cinza um pouco mais escuro para contraste */
+    line-height: 1.6; /* Melhor legibilidade */
     animation: fadeInDown 1.5s forwards;
 }
 
 #result-center-container {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Alinha ao topo dos elementos */
     justify-content: center;
-    gap: 40px;
-    margin-bottom: 30px;
+    gap: 50px; /* Mais espaçamento entre imagem e pontos fortes */
+    margin-bottom: 40px;
     animation: fadeInUp 1.5s forwards;
 }
 
 #course-image {
-    width: 380px;
-    height: 230px;
+    width: 420px; /* Ligeiramente maior */
+    height: 250px; /* Ligeiramente maior */
     object-fit: cover;
-    border: 2px solid #00a2ff88;
-    box-shadow: 0 0 25px rgba(0, 161, 255, 0.6);
+    border: 3px solid #00a2ff88; /* Borda mais pronunciada */
+    box-shadow: 
+        0 0 10px rgba(0, 161, 255, 0.4), /* Sombra interna sutil */
+        0 0 30px rgba(0, 161, 255, 0.7); /* Brilho externo */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transição para hover */
+}
+#course-image:hover {
+    transform: scale(1.02);
+    box-shadow: 
+        0 0 15px rgba(0, 161, 255, 0.6), 
+        0 0 40px rgba(0, 161, 255, 0.9);
 }
 
+
 #strong-points-container {
-    background-color: transparent;
-    border: 1px solid #ffffff22;
-    padding: 20px;
-    width: 420px;
+    background-color: rgba(20, 22, 25, 0.7); /* Fundo sutil */
+    border: 1px solid #00a2ff60; /* Borda azul clara */
+    border-left: 5px solid #00A1FF; /* Borda lateral de destaque */
+    padding: 25px;
+    width: 450px; /* Ligeiramente mais largo */
     text-align: left;
+    box-shadow: 0 0 20px rgba(0, 161, 255, 0.2); /* Sombra sutil */
 }
 #strong-points-container h3 {
     color: #ffffff;
-    font-family: var(--font-body);
-    font-size: 1.2em;
-    margin-bottom: 15px;
+    font-family: var(--font-title); /* Título dos pontos fortes com a fonte do título */
+    font-size: 1.5em; /* Maior */
+    margin-bottom: 18px;
     border-bottom: 1px solid #00a2ff88;
     padding-bottom: 10px;
+    text-shadow: 0 0 8px rgba(0, 161, 255, 0.4); /* Sombra para o título */
 }
-#strong-points { list-style: none; }
+#strong-points { list-style: none; padding: 0;}
 #strong-points li {
     font-family: var(--font-body);
-    font-size: 1.1em;
-    margin-bottom: 10px;
-    color: #f0f0f0;
+    font-size: 1.15em; /* Ligeiramente maior */
+    margin-bottom: 12px;
+    color: #e0e0e0;
+    line-height: 1.4;
 }
-#strong-points li::before { content: "» "; color: #00A1FF; }
+#strong-points li::before { content: "» "; color: #00A1FF; font-weight: bold; margin-right: 8px; }
 
 #result-bottom-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    width: 840px;
-    margin-bottom: 40px;
+    align-items: flex-end; /* Alinha a base dos elementos */
+    width: 950px; /* Largura maior para esse container */
+    margin-bottom: 50px; /* Mais espaço para os botões */
     animation: fadeInUp 2s forwards;
+    position: relative; /* Para posicionar a logo ETEC */
+}
+
+#suggestions-container {
+    flex-grow: 1; /* Permite que ocupe o espaço restante */
+    max-width: 60%; /* Limita a largura para a logo não ficar muito apertada */
+    background-color: rgba(20, 22, 25, 0.5); /* Fundo sutil */
+    border: 1px solid #ffffff1a; /* Borda sutil */
+    padding: 20px 25px;
+    margin-right: 30px; /* Espaço entre as sugestões e a logo */
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 #suggestions-container h3 {
     font-family: var(--font-title);
-    font-size: 1.5em;
-    color: #ccc;
-    margin-bottom: 15px;
+    font-size: 1.6em; /* Maior */
+    color: #e0e0e0;
+    margin-bottom: 18px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2); /* Sombra branca sutil */
 }
-#result-courses { list-style: none; padding: 0; font-family: var(--font-body); font-size: 1.1em; text-align: left; }
-#result-courses li { margin-top: 8px; color: #a2a2a2; }
+#result-courses { list-style: none; padding: 0; font-family: var(--font-body); font-size: 1.15em; text-align: left; }
+#result-courses li { 
+    margin-top: 10px; 
+    color: #a2a2a2; 
+    transition: color 0.2s ease;
+}
+#result-courses li:hover {
+    color: #00A1FF;
+}
 
 #etec-logo {
-    max-width: 120px;
-    opacity: 0.6;
-    transition: opacity 0.3s;
+    max-width: 140px; /* Ligeiramente maior */
+    opacity: 0.5; /* Mais translúcida no estado normal */
+    transition: opacity 0.3s, transform 0.3s;
+    filter: drop-shadow(0 0 10px rgba(0, 161, 255, 0.3)); /* Sombra azul para a logo */
 }
-#etec-logo:hover { opacity: 1; }
+#etec-logo:hover { 
+    opacity: 0.8; /* Mais visível no hover */
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 15px rgba(0, 161, 255, 0.6));
+}
 
 #result-buttons-container {
     display: flex;
-    gap: 20px;
+    gap: 30px; /* Mais espaço entre os botões */
+    margin-top: 20px; /* Um pouco mais de distância dos elementos acima */
     animation: fadeInUp 2.5s forwards;
 }
 
 #restart-button,
 #view-all-results-button {
-    padding: 15px 30px;
-    background: linear-gradient(#00A1FF, #0077c7);
-    border: none;
-    border-radius: 5px;
+    padding: 18px 35px; /* Botões um pouco maiores */
+    background: linear-gradient(#00A1FF, #0066b3); /* Gradiente mais forte */
+    border: 2px solid #00A1FF; /* Borda azul clara */
+    border-radius: 8px; /* Cantos um pouco mais arredondados */
     color: #fff;
     font-family: var(--font-title);
-    font-size: 1.3em;
+    font-size: 1.4em; /* Fonte maior nos botões */
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 0 20px rgba(0, 161, 255, 0.5);
+    transition: all 0.3s ease; /* Transição mais suave */
+    /* Múltiplas sombras para um brilho mais evidente nos botões */
+    box-shadow: 
+        0 0 10px rgba(0, 161, 255, 0.5), 
+        0 0 20px rgba(0, 161, 255, 0.3);
 }
 #restart-button:hover,
 #view-all-results-button:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 30px rgba(0, 161, 255, 0.8);
+    transform: translateY(-5px) scale(1.05); /* Efeito de elevação mais pronunciado */
+    /* Brilho maior no hover */
+    box-shadow: 
+        0 0 15px rgba(0, 161, 255, 0.8), 
+        0 0 30px rgba(0, 161, 255, 0.6),
+        0 10px 40px rgba(0, 161, 255, 0.5); /* Sombra mais abaixo */
 }
+
 
 .hidden { display: none !important; }
 
-/* Animações de entrada para a tela de resultado */
+/* Animações de entrada para a tela de resultado (mantidas, mas podem ser ajustadas se necessário) */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-30px); }
+    from { opacity: 0; transform: translateY(-40px); }
     to { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(40px); }
     to { opacity: 1; transform: translateY(0); }
 }

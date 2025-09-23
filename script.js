@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener para o novo botão
     viewAllResultsButton.addEventListener('click', () => {
-        window.location.href = "/dashboard";
+        window.location.href = "/perguntas/dashboard";
     });
 
     window.addEventListener('keydown', (e) => {
