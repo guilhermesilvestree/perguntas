@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const etecLogo = document.getElementById('etec-logo');
     const strongPointsList = document.getElementById('strong-points');
     const restartButton = document.getElementById('restart-button');
+    const viewAllResultsButton = document.getElementById('view-all-results-button'); // Botão adicionado
 
     // --- MODIFICADO: Efeitos Sonoros ---
     const clickSound = new Audio('./assets/sounds/click.wav');
@@ -375,6 +376,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         resultScreen.classList.add('hidden');
         window.location.replace("/perguntas");
+    });
+
+    // Event listener para o novo botão
+    viewAllResultsButton.addEventListener('click', () => {
+        window.location.href = "/dashboard";
     });
 
     window.addEventListener('keydown', (e) => {
