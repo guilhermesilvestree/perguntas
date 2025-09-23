@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MODIFICADO: Efeitos Sonoros ---
     const clickSound = new Audio('./assets/sounds/click.wav');
     const unlockSound = new Audio('./assets/sounds/unlock.wav');
-    const sirenSound = new Audio('./assets/sounds/sirene.wav'); // <-- ADICIONE ESTA LINHA
+    const sirenSound = new Audio('./assets/sounds/sirene.mp3'); // <-- ADICIONE ESTA LINHA
     const passwordSound = new Audio('./assets/sounds/password.wav');
 
     // --- 2. MAPEAMENTO DE CURSOS E DETALHES ---
