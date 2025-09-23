@@ -143,43 +143,59 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MODIFICADO ---
     // Adicionado o som ao focar no campo de senha
     function showQuestion(index) {
-        const questionData = gameData[index];
-        questionText.textContent = questionData.questionText;
-        answerOptions.innerHTML = '';
+    const questionData = gameData[index];
+    questionText.textContent = questionData.questionText;
+    answerOptions.innerHTML = '';
 
-        if (questionData.fragment !== "SENHA") {
-            questionData.answers.forEach(answer => {
-                const button = document.createElement('button');
-                button.textContent = answer.text;
-                button.onclick = () => selectAnswer(answer.points, questionData.fragment);
-                answerOptions.appendChild(button);
-            });
-        } else {
-            const input = document.createElement('input');
-            input.type = "text";
-            input.placeholder = "Digite a senha da fase";
-            input.autocomplete = "off";
-            
-            // <-- NOVO: Adiciona o evento para tocar o som
-            input.addEventListener('focus', () => {
-                passwordSound.play();
-            });
-
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    checkPassword(input.value);
-                }
-            });
+    if (questionData.fragment !== "SENHA") {
+        questionData.answers.forEach(answer => {
             const button = document.createElement('button');
-            button.textContent = "Destrancar";
-            button.onclick = () => checkPassword(input.value);
-            answerOptions.appendChild(input);
+            button.textContent = answer.text;
+            button.onclick = () => selectAnswer(answer.points, questionData.fragment);
             answerOptions.appendChild(button);
-            input.focus();
-        }
+        });
+    } else {
+        const input = document.createElement('input');
+        input.type = "text";
+        input.placeholder = "Digite a senha da fase";
+        input.autocomplete = "off";
         
-        questionUI.classList.remove('hidden');
+        input.addEventListener('focus', () => {
+            passwordSound.play();
+        });
+
+        // NEW: Hides the error message when the user starts typing again
+        input.addEventListener('input', () => {
+            const errorElement = document.getElementById('password-error-text');
+            if (errorElement) {
+                errorElement.classList.add('hidden');
+            }
+        });
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkPassword(input.value);
+            }
+        });
+
+        const button = document.createElement('button');
+        button.textContent = "Destrancar";
+        button.onclick = () => checkPassword(input.value);
+
+        // NEW: Creates the element for our custom error message
+        const errorText = document.createElement('p');
+        errorText.id = 'password-error-text';
+        errorText.classList.add('hidden'); // Starts hidden
+
+        answerOptions.appendChild(input);
+        answerOptions.appendChild(button);
+        answerOptions.appendChild(errorText); // Adds the error element to the UI
+        input.focus();
     }
+    
+    questionUI.classList.remove('hidden');
+}
+
     
     function selectAnswer(points, fragment) {
         clickSound.play().catch(error => {
@@ -211,21 +227,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkPassword(passwordAttempt) {
         const currentQuestionData = gameData[gameState.questionIndex];
         const correctPassword = currentQuestionData.password;
+        const inputField = document.querySelector('#answer-options input');
+        const errorElement = document.getElementById('password-error-text'); // Get the error element
 
         if (passwordAttempt.toUpperCase() === correctPassword.toUpperCase()) {
             unlockSound.play();
+            if (errorElement) errorElement.classList.add('hidden'); // Hide error on success
             questionUI.classList.add('hidden');
             gameState.questionIndex++;
             const nextQuestionData = gameData[gameState.questionIndex];
             if(nextQuestionData) {
-                 updateObjective(nextQuestionData.hint);
+                updateObjective(nextQuestionData.hint);
             }
             advanceToNextPhase();
             saveState();
         } else {
-            alert("Senha Incorreta! Tente novamente.");
-            const inputField = document.querySelector('#answer-options input');
-            if (inputField) inputField.value = "";
+            // This is the new "alert" logic
+            if (inputField) {
+                inputField.value = "";
+                inputField.classList.add('input-shake');
+                setTimeout(() => inputField.classList.remove('input-shake'), 500); // Remove animation class
+            }
+            if (errorElement) {
+                errorElement.textContent = "Senha Incorreta! Tente novamente.";
+                errorElement.classList.remove('hidden');
+            }
         }
     }
 

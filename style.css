@@ -86,7 +86,7 @@ body.fade-out {
     transition: background-color 0.3s;
     z-index: 3;
 }
-/* .hotspot:hover { background: radial-gradient(circle,rgba(0, 102, 255, 1) 0%, rgba(0, 102, 255, 0) 50%, rgba(0, 102, 255, 0) 100%); } */
+.hotspot:hover { background: radial-gradient(circle,rgba(0, 102, 255, 0.21) 0%, rgba(0, 102, 255, 0) 40%, rgba(0, 102, 255, 0) 40%); }
 
 /* Posições - AJUSTE CONFORME SUA IMAGEM */
 #hotspot-1-1 {top: 55%;left: 0%;width: 20%;height: 40%;}
@@ -320,6 +320,37 @@ body.fade-out {
     margin-bottom: 18px;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.2); /* Sombra branca sutil */
 }
+
+/* === NEW: Custom Alert & Error Styles === */
+#password-error-text {
+    color: #FF6384; /* A reddish color that fits the palette */
+    font-family: var(--font-body);
+    font-size: 1em;
+    margin-top: 15px;
+    height: 20px; /* Prevents the layout from jumping when the message appears */
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+#password-error-text.hidden {
+    opacity: 0;
+}
+
+.input-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97);
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+
+/* === MODIFIED: Make the original .hidden class less specific for opacity transition === */
+.hidden { display: none !important; }
+
+
 #result-courses { list-style: none; padding: 0; font-family: var(--font-body); font-size: 1.15em; text-align: left; }
 #result-courses li { 
     margin-top: 10px; 
