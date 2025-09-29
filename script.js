@@ -16,12 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const etecLogo = document.getElementById('etec-logo');
     const strongPointsList = document.getElementById('strong-points');
     const restartButton = document.getElementById('restart-button');
-    const viewAllResultsButton = document.getElementById('view-all-results-button'); // Botão adicionado
+    const viewAllResultsButton = document.getElementById('view-all-results-button');
 
-    // --- MODIFICADO: Efeitos Sonoros ---
     const clickSound = new Audio('./assets/sounds/click.wav');
     const unlockSound = new Audio('./assets/sounds/unlock.wav');
-    const sirenSound = new Audio('./assets/sounds/sirene.mp3'); // <-- ADICIONE ESTA LINHA
     const passwordSound = new Audio('./assets/sounds/password.wav');
 
     // --- 2. MAPEAMENTO DE CURSOS E DETALHES ---
@@ -32,12 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const courseDetails = {
-        ds: { title: "Perfil: O Arquiteto de Sistemas", description: "Você tem uma mente lógica e gosta de construir soluções eficientes para problemas complexos. Seu raciocínio analítico é a chave para inovar.", image: "https://blog.xpeducacao.com.br/wp-content/uploads/2022/12/diferenca-entre-sistema-de-informaca-e-analise-e-desenvolvimento-de-sistema.jpg", strongPoints: ["Raciocínio lógico", "Resolução de problemas", "Inovação tecnológica", "Atenção aos detalhes"] },
+        ds:  { title: "Perfil: O Arquiteto de Sistemas", description: "Você tem uma mente lógica e gosta de construir soluções eficientes para problemas complexos. Seu raciocínio analítico é a chave para inovar.", image: "https://blog.xpeducacao.com.br/wp-content/uploads/2022/12/diferenca-entre-sistema-de-informaca-e-analise-e-desenvolvimento-de-sistema.jpg", strongPoints: ["Raciocínio lógico", "Resolução de problemas", "Inovação tecnológica", "Atenção aos detalhes"] },
         inf: { title: "Perfil: O Solucionador Digital", description: "Você é prático e rápido para resolver problemas técnicos, fazendo a tecnologia funcionar a seu favor. Adaptabilidade é seu ponto forte.", image: "https://www.icursos.com.br/images/curso_21_topo.jpg", strongPoints: ["Pensamento rápido", "Adaptabilidade digital", "Manutenção de redes", "Suporte técnico"] },
         seg: { title: "Perfil: O Protetor", description: "Você tem um olhar atento para riscos e normas, garantindo a segurança e o bem-estar de todos. Prevenção é sua prioridade.", image: "https://www.extraconsult.com.br/wp-content/uploads/2024/04/11_blog.png", strongPoints: ["Prevenção de riscos", "Cumprimento de normas", "Atenção à segurança", "Organização"] },
         adm: { title: "Perfil: O Estrategista", description: "Você tem talento para organizar, liderar e planejar, transformando ideias em realidade. Sua visão sistêmica impulsiona o sucesso.", image: "https://napratica.org.br/wp-content/uploads/2018/09/curso-de-administra%C3%A7%C3%A3o.jpg", strongPoints: ["Liderança", "Planejamento estratégico", "Organização", "Tomada de decisão"] },
         mkt: { title: "Perfil: O Comunicador", description: "Você sabe como criar mensagens impactantes e conectar ideias com o público certo. Sua criatividade e persuasão geram resultados.", image: "https://cloudinary.hbs.edu/hbsit/image/upload/s--jcW2HPqC--/f_auto,c_fill,h_375,w_750,/v20200101/EA99CC738B99D0AA67987EC2976D550F.jpg", strongPoints: ["Criatividade", "Comunicação eficaz", "Persuasão", "Análise de mercado"] },
-        rh: { title: "Perfil: O Mediador", description: "Você entende de pessoas, sabe como motivar e resolver conflitos para construir equipes fortes. O bem-estar coletivo é sua missão.", image: "https://startupi.com.br/wp-content/uploads/2023/01/Design-sem-nome-2023-01-13T150816.940.jpg", strongPoints: ["Empatia", "Resolução de conflitos", "Comunicação interpessoal", "Desenvolvimento de equipes"] },
+        rh:  { title: "Perfil: O Mediador", description: "Você entende de pessoas, sabe como motivar e resolver conflitos para construir equipes fortes. O bem-estar coletivo é sua missão.", image: "https://startupi.com.br/wp-content/uploads/2023/01/Design-sem-nome-2023-01-13T150816.940.jpg", strongPoints: ["Empatia", "Resolução de conflitos", "Comunicação interpessoal", "Desenvolvimento de equipes"] },
         log: { title: "Perfil: O Otimizador", description: "Você enxerga processos e encontra as melhores rotas e métodos para que tudo funcione com eficiência. Sua mente prática evita desperdícios.", image: "https://patrus.com.br/wp-content/uploads/2017/03/118130-estender-1k-saiba-qual-a-importancia-da-logistica-para-o-crescimento-da-empresa.jpg", strongPoints: ["Otimização de processos", "Planejamento de rotas", "Análise de custos", "Eficiência operacional"] },
         cex: { title: "Perfil: O Conector Global", description: "Você tem interesse em conectar mercados e culturas, lidando com os desafios do comércio internacional. Sua visão global é um diferencial.", image: "https://irp.cdn-website.com/e9d501ba/dms3rep/multi/O+Que+Faz+um+T%C3%A9cnico+em+Com%C3%A9rcio+Exterior.webp", strongPoints: ["Visão global", "Negociação", "Fluência cultural", "Análise de mercado internacional"] },
         jur: { title: "Perfil: O Analista de Regras", description: "Você tem uma mente metódica, que entende a importância das regras e dos processos formais. Justiça e conformidade são seus pilares.", image: "https://blog.wyden.com.br/wp-content/uploads/2023/10/still-life-with-scales-justice-1.jpg", strongPoints: ["Raciocínio analítico", "Atenção a normas", "Integridade", "Resolução de problemas legais"] },
@@ -161,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         input.autocomplete = "off";
         
         input.addEventListener('focus', () => {
+            passwordSound.volume = 0.3;
             passwordSound.play();
         });
 
@@ -198,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     function selectAnswer(points, fragment) {
+        clickSound.volume = 0.3;
         clickSound.play().catch(error => {
             console.error("Erro ao tocar o som de clique:", error);
         });
@@ -306,10 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function displayResults(courseKey, suggestions) {
-        sirenSound.volume = 0.3; // Define um volume baixo (30%)
-        sirenSound.play().catch(error => {
-            console.error("Erro ao tocar o som de sirene:", error);
-        });
         const resultProfile = courseDetails[courseKey] || {
             title: "Seu Perfil é Versátil!",
             description: "Você demonstrou uma grande variedade de habilidades e pode se adaptar a diversas áreas.",
