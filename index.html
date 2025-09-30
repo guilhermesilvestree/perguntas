@@ -38,6 +38,101 @@
         opacity: 0;
     }
 
+    /* --- ESTILOS PARA O OVERLAY DO FORMULÁRIO (ATUALIZADOS) --- */
+    #form-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(18, 18, 18, 0.95);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+        transition: opacity 0.5s ease-in-out;
+        overflow: hidden; 
+    }
+    
+    #form-overlay::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+            linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+        background-size: 100% 4px, 100% 100%;
+        animation: vhs-jitter 0.2s infinite linear;
+        z-index: 0; 
+        pointer-events: none;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 90%; 
+        max-width: 1100px;
+        position: relative; 
+        z-index: 1;
+    }
+    
+    .form-title {
+        font-family: var(--font-title);
+        font-size: 2.2em; /* ALTERADO: Ajuste de tamanho */
+        color: var(--text-primary);
+        margin: 2vh 0 20px 0; /* ALTERADO: Adicionado espaçamento em cima e embaixo */
+    }
+
+    .form-container p {
+        font-size: 1.1em;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .iframe-wrapper {
+        width: 100%;
+        height: 70vh; 
+        overflow: hidden; 
+        border-radius: 15px;
+    }
+
+    .form-container iframe {
+        width: calc(100% + 18px); 
+        height: 100%;
+        border: none; 
+        padding-right: 18px; 
+        box-sizing: content-box;
+    }
+
+    #proceed-button {
+        font-family: var(--font-title);
+        font-size: 1.3em;
+        text-decoration: none;
+        color: var(--accent-color);
+        background-color: transparent;
+        border: 2px solid var(--accent-color);
+        padding: 12px 35px;
+        cursor: pointer;
+        margin-top: 30px; 
+        transition: all 0.3s ease;
+    }
+
+    #proceed-button:hover {
+        color: #fff;
+        background-color: var(--accent-color);
+        box-shadow: 0 0 15px 3px rgba(0, 161, 255, 0.5);
+    }
+    /* --- FIM DOS ESTILOS DO OVERLAY --- */
+
+
     #bg-video {
         position: fixed;
         top: 50%;
@@ -54,11 +149,13 @@
     .intro-container {
         width: 100%;
         height: 100%;
-        display: flex;
+        display: none; 
         justify-content: center;
         align-items: center;
         background-color: rgba(20, 22, 25, 0.8);
         backdrop-filter: blur(3px);
+        opacity: 0; 
+        transition: opacity 0.8s ease-in-out;
     }
 
     .content-wrapper {
@@ -141,7 +238,7 @@
         box-shadow: 0 0 0 0 rgba(0, 161, 255, 0.7);
         cursor: pointer;
         display: block;
-        margin-bottom: 25px; /* Added margin to separate from the new button */
+        margin-bottom: 25px;
     }
 
     .cta-button:hover {
@@ -151,7 +248,6 @@
         transform: translateY(-3px);
     }
     
-    /* --- NEW STYLES FOR WARNING AND FULLSCREEN --- */
     .immersion-controls {
         text-align: center;
         margin-top: 30px;
@@ -186,32 +282,38 @@
         color: var(--text-secondary);
         margin-top: 10px;
     }
-    /* --- END OF NEW STYLES --- */
-
 
     @media (max-width: 768px) {
-        h1.glitch {
-            font-size: 2.5em;
-        }
-        .intro-text, .mystery-text {
-            font-size: 1.1em;
-        }
-        .cta-button {
-            font-size: 1.2em;
-            padding: 12px 30px;
-        }
-        .warning-text, .fullscreen-button {
-            font-size: 0.9em;
-        }
+        h1.glitch { font-size: 2.5em; }
+        .intro-text, .mystery-text { font-size: 1.1em; }
+        .cta-button { font-size: 1.2em; padding: 12px 30px; }
+        .warning-text, .fullscreen-button { font-size: 0.9em; }
+        .form-container { width: 95%; } 
+        .iframe-wrapper { height: 70vh; }
+        .form-title { font-size: 2em; }
+        .form-container p { font-size: 1em; }
+        #proceed-button { font-size: 1.2em; }
     }
  </style>
 </head>
 <body>
+    <div id="form-overlay">
+        <div class="form-container">
+            <h2 class="form-title">Primeiro, Responda...</h2>
+            <p>Para fins de consulta, por favor, responda ao formulário abaixo. Após o envio, clique em "Prosseguir".</p>
+            <div class="iframe-wrapper">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc4SGr4KHxY5Ae7BK22cmvfV662Mqgq515G_cxzkwidXcqrww/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Carregando…</iframe>
+            </div>
+            <button id="proceed-button">Prosseguir</button>
+        </div>
+    </div>
+
     <video autoplay loop muted playsinline id="bg-video" poster="assets/fundo_inicio.png">
         <source src="assets/fundo_video.mp4" type="video/mp4">
         Seu navegador não suporta a tag de vídeo.
     </video>
     <div class="vhs-overlay"></div>
+
     <div class="intro-container">
         <div class="content-wrapper">
             <h1 class="glitch" data-text="[PROJETO VOCACIONAL]">
@@ -232,10 +334,31 @@
                 <button id="fullscreenBtn" class="fullscreen-button">Ativar Tela Cheia</button>
                 <p class="f11-text">(Ou pressione F11)</p>
             </div>
-            </div>
+        </div>
     </div>
 
     <script>
+        // Lógica para remover o formulário e mostrar o conteúdo principal
+        const formOverlay = document.getElementById('form-overlay');
+        const proceedButton = document.getElementById('proceed-button');
+        const introContainer = document.querySelector('.intro-container');
+
+        proceedButton.addEventListener('click', () => {
+            // Adiciona uma classe para o efeito de fade-out
+            formOverlay.style.opacity = '0';
+            
+            // Após a transição, remove o overlay e mostra o conteúdo principal
+            setTimeout(() => {
+                formOverlay.style.display = 'none';
+                introContainer.style.display = 'flex'; // Torna o conteúdo visível
+                setTimeout(() => {
+                    introContainer.style.opacity = '1'; // Ativa o fade-in do conteúdo
+                }, 50); // Pequeno delay para garantir que o display foi aplicado
+            }, 500); // Deve ser igual à duração da transição no CSS
+        });
+
+
+        // Lógica original para o botão de tela cheia
         const fullscreenBtn = document.getElementById('fullscreenBtn');
         const docElem = document.documentElement;
 
