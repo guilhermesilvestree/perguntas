@@ -1,4 +1,4 @@
-/* style.css (VERSÃO FINAL) */
+/* style.css (VERSÃO COMPLETA E ATUALIZADA) */
 
 /* === 1. Redefinições Padrão e Variáveis de Fonte === */
 * {
@@ -80,15 +80,13 @@ body.fade-out {
 /* === 5. Hotspots === */
 .hotspot {
     position: absolute;
-    /* background-color: rgba(0, 102, 255, 0.09);
-    border: 1px solid rgba(0, 102, 255, 0.49); */
     cursor: pointer;
     transition: background-color 0.3s;
     z-index: 3;
 }
 .hotspot:hover { background: radial-gradient(circle,rgba(0, 102, 255, 0.21) 0%, rgba(0, 102, 255, 0) 40%, rgba(0, 102, 255, 0) 40%); }
 
-/* Posições - AJUSTE CONFORME SUA IMAGEM */
+/* Posições */
 #hotspot-1-1 {top: 55%;left: 0%;width: 20%;height: 40%;}
 #hotspot-1-2 {top: 30%;left: 68%;width: 29%;height: 60%;}
 #hotspot-1-3 {top: 25%;left: 63%;width: 7%;height: 40%;}
@@ -104,9 +102,6 @@ body.fade-out {
 #hotspot-3-3 {top: 50%;left: 15%;width: 70%;height: 20%;}
 #hotspot-3-4 {top: 40%;left: 45%;width: 10%;height: 16%;}
 #hotspot-3-5 {top: 30%;left: 88%;width: 10%;height: 40%;}
-
-/* @keyframes ping { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 150, 255, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 10px 20px rgba(0, 150, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 150, 255, 0); } }
-.hotspot-active { animation: ping 1.5s ease-out; } */
 
 /* === 6. Interface de Jogo === */
 #question-ui {
@@ -153,52 +148,84 @@ body.fade-out {
 }
 #answer-options button:hover { background: linear-gradient(#4a4a4a, #3a3a3a); color: #00A1FF; border-bottom: 2px solid #00a2ff60; }
 #inventory {
-    position: absolute; bottom: 20px; left: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 10px 15px;
-    border: 1px solid #333;
-    border-left: 3px solid #00A1FF;
-    font-family: var(--font-body); font-size: 1.1em;
-    z-index: 10;
-}
-#objective-panel {
     position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    max-width: 700px;
-    padding: 10px 25px;
-    background-color: rgba(20, 22, 25, 0.85);
-    border: 1px solid #4a4a4a;
-    border-top: 2px solid #00A1FF;
-    backdrop-filter: blur(3px);
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    z-index: 10;
-    color: #00A1FF;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(10, 25, 40, 0.9);
+    border: 1px solid #00a2ff44;
+    border-left: 4px solid #00A1FF;
     font-family: var(--font-body);
     font-size: 1.1em;
-    text-align: center;
-    pointer-events: none;
-    transition: opacity 0.5s;
+    z-index: 10;
+    padding: 10px 15px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(0, 161, 255, 0.3);
+
+    /* Novo: Alinhamento para o ícone */
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Adiciona um "título" para o painel de objetivo */
-#objective-panel::before {
-    content: "OBJETIVO ATUAL:";
-    font-size: 0.8em;
-    color: #ffffff88;
-    display: block;
-    margin-bottom: 5px;
+/* Novo: Estilo para o texto dos fragmentos */
+#fragments-text {
+    color: #e0e0e0;
+    font-weight: bold;
+    letter-spacing: 2px; /* Deixa as letras mais espaçadas */
 }
+
+/* === NOVO PAINEL DE OBJETIVOS (MODIFICADO) === */
+#objective-panel {
+    position: absolute;
+    top: 25px; /* Posição a partir do topo */
+    left: 50%;
+    transform: translateX(-50%) translateY(-150%); /* Começa fora da tela */
+    width: auto;
+    max-width: 600px;
+    padding: 12px 20px;
+    background-color: rgba(10, 25, 40, 0.9); /* Fundo azul escuro semi-transparente */
+    border: 1px solid #00a2ff44;
+    border-left: 4px solid #00A1FF; /* Borda de destaque na esquerda */
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(0, 161, 255, 0.3);
+    z-index: 10;
+    color: #e0e0e0;
+    font-family: var(--font-body);
+    font-size: 1em;
+    text-align: left;
+    pointer-events: none;
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+}
+
+/* Classe para mostrar o toast com animação */
+#objective-panel.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Classe para o estado 'concluído' */
+#objective-panel.completed {
+    border-left-color: #00FF8C; /* Verde para concluído */
+}
+#objective-panel.completed .objective-title {
+    color: #00FF8C;
+}
+
+.objective-title {
+    font-weight: bold;
+    color: #00A1FF; /* Azul para novo objetivo */
+    margin-right: 10px;
+}
+/* === FIM DO NOVO PAINEL DE OBJETIVOS === */
+
 
 #result-screen {
     position: absolute;
     width: 100%; height: 100%;
-    /* Gradiente radial mais escuro e com mais brilho para o fundo */
     background: radial-gradient(ellipse at center, rgba(8, 15, 25, 0.98) 0%, rgba(0, 0, 0, 0.99) 100%);
-    backdrop-filter: blur(8px); /* Blur um pouco mais intenso */
-    color: #e0e0e0; /* Cinza claro para textos base */
+    backdrop-filter: blur(8px); 
+    color: #e0e0e0;
     z-index: 20;
     display: flex;
     flex-direction: column;
@@ -207,55 +234,52 @@ body.fade-out {
     padding: 40px;
     opacity: 0;
     animation: fadeIn 1s 0.5s forwards;
-    /* Efeito de partícula de fundo sutil (se quiser adicionar) */
-    /* background-image: url('data:image/svg+xml;base64,...'); (Exemplo, se quiser um pattern) */
 }
 
 @keyframes fadeIn { to { opacity: 1; } }
 
 #result-title { 
     font-family: var(--font-title);
-    font-size: 3.5em; /* Ligeiramente maior */
-    color: #fff; /* Branco Puro */
-    /* Múltiplas sombras para um efeito neon/brilhante */
+    font-size: 3.5em; 
+    color: #fff;
     text-shadow: 
-        0 0 5px rgba(0, 161, 255, 0.5), /* Sombra azul clara */
-        0 0 15px rgba(0, 161, 255, 0.8), /* Sombra azul mais intensa */
-        0 0 30px rgba(0, 161, 255, 0.6), /* Brilho azul */
-        0 0 40px rgba(0, 161, 255, 0.4); /* Halo azul */
-    margin-bottom: 20px; /* Um pouco mais de espaço */
+        0 0 5px rgba(0, 161, 255, 0.5),
+        0 0 15px rgba(0, 161, 255, 0.8),
+        0 0 30px rgba(0, 161, 255, 0.6),
+        0 0 40px rgba(0, 161, 255, 0.4);
+    margin-bottom: 20px;
     animation: fadeInDown 1s forwards;
 }
 
 #result-description {
     font-family: var(--font-body);
-    font-size: 1.3em; /* Ligeiramente maior */
-    max-width: 65%; /* Levemente mais largo para descrição */
-    margin-bottom: 40px; /* Mais espaço para o próximo bloco */
+    font-size: 1.3em; 
+    max-width: 65%; 
+    margin-bottom: 40px;
     text-align: center;
-    color: #b0b0b0; /* Cinza um pouco mais escuro para contraste */
-    line-height: 1.6; /* Melhor legibilidade */
+    color: #b0b0b0; 
+    line-height: 1.6;
     animation: fadeInDown 1.5s forwards;
 }
 
 #result-center-container {
     display: flex;
-    align-items: flex-start; /* Alinha ao topo dos elementos */
+    align-items: flex-start;
     justify-content: center;
-    gap: 50px; /* Mais espaçamento entre imagem e pontos fortes */
+    gap: 50px; 
     margin-bottom: 40px;
     animation: fadeInUp 1.5s forwards;
 }
 
 #course-image {
-    width: 420px; /* Ligeiramente maior */
-    height: 250px; /* Ligeiramente maior */
+    width: 420px; 
+    height: 250px; 
     object-fit: cover;
-    border: 3px solid #00a2ff88; /* Borda mais pronunciada */
+    border: 3px solid #00a2ff88;
     box-shadow: 
-        0 0 10px rgba(0, 161, 255, 0.4), /* Sombra interna sutil */
-        0 0 30px rgba(0, 161, 255, 0.7); /* Brilho externo */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transição para hover */
+        0 0 10px rgba(0, 161, 255, 0.4),
+        0 0 30px rgba(0, 161, 255, 0.7);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 #course-image:hover {
     transform: scale(1.02);
@@ -266,27 +290,27 @@ body.fade-out {
 
 
 #strong-points-container {
-    background-color: rgba(20, 22, 25, 0.7); /* Fundo sutil */
-    border: 1px solid #00a2ff60; /* Borda azul clara */
-    border-left: 5px solid #00A1FF; /* Borda lateral de destaque */
+    background-color: rgba(20, 22, 25, 0.7);
+    border: 1px solid #00a2ff60;
+    border-left: 5px solid #00A1FF;
     padding: 25px;
-    width: 450px; /* Ligeiramente mais largo */
+    width: 450px; 
     text-align: left;
-    box-shadow: 0 0 20px rgba(0, 161, 255, 0.2); /* Sombra sutil */
+    box-shadow: 0 0 20px rgba(0, 161, 255, 0.2);
 }
 #strong-points-container h3 {
     color: #ffffff;
-    font-family: var(--font-title); /* Título dos pontos fortes com a fonte do título */
-    font-size: 1.5em; /* Maior */
+    font-family: var(--font-title); 
+    font-size: 1.5em; 
     margin-bottom: 18px;
     border-bottom: 1px solid #00a2ff88;
     padding-bottom: 10px;
-    text-shadow: 0 0 8px rgba(0, 161, 255, 0.4); /* Sombra para o título */
+    text-shadow: 0 0 8px rgba(0, 161, 255, 0.4);
 }
 #strong-points { list-style: none; padding: 0;}
 #strong-points li {
     font-family: var(--font-body);
-    font-size: 1.15em; /* Ligeiramente maior */
+    font-size: 1.15em; 
     margin-bottom: 12px;
     color: #e0e0e0;
     line-height: 1.4;
@@ -296,38 +320,38 @@ body.fade-out {
 #result-bottom-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; /* Alinha a base dos elementos */
-    width: 950px; /* Largura maior para esse container */
-    margin-bottom: 50px; /* Mais espaço para os botões */
+    align-items: flex-end; 
+    width: 950px; 
+    margin-bottom: 50px; 
     animation: fadeInUp 2s forwards;
-    position: relative; /* Para posicionar a logo ETEC */
+    position: relative;
 }
 
 #suggestions-container {
-    flex-grow: 1; /* Permite que ocupe o espaço restante */
-    max-width: 60%; /* Limita a largura para a logo não ficar muito apertada */
-    background-color: rgba(20, 22, 25, 0.5); /* Fundo sutil */
-    border: 1px solid #ffffff1a; /* Borda sutil */
+    flex-grow: 1; 
+    max-width: 60%; 
+    background-color: rgba(20, 22, 25, 0.5);
+    border: 1px solid #ffffff1a; 
     padding: 20px 25px;
-    margin-right: 30px; /* Espaço entre as sugestões e a logo */
+    margin-right: 30px; 
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 #suggestions-container h3 {
     font-family: var(--font-title);
-    font-size: 1.6em; /* Maior */
+    font-size: 1.6em; 
     color: #e0e0e0;
     margin-bottom: 18px;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2); /* Sombra branca sutil */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-/* === NEW: Custom Alert & Error Styles === */
+/* === Custom Alert & Error Styles === */
 #password-error-text {
-    color: #FF6384; /* A reddish color that fits the palette */
+    color: #FF6384; 
     font-family: var(--font-body);
     font-size: 1em;
     margin-top: 15px;
-    height: 20px; /* Prevents the layout from jumping when the message appears */
+    height: 20px;
     transition: opacity 0.3s ease;
     opacity: 1;
 }
@@ -347,9 +371,7 @@ body.fade-out {
   40%, 60% { transform: translateX(3px); }
 }
 
-/* === MODIFIED: Make the original .hidden class less specific for opacity transition === */
 .hidden { display: none !important; }
-
 
 #result-courses { list-style: none; padding: 0; font-family: var(--font-body); font-size: 1.15em; text-align: left; }
 #result-courses li { 
@@ -362,54 +384,49 @@ body.fade-out {
 }
 
 #etec-logo {
-    max-width: 140px; /* Ligeiramente maior */
-    opacity: 0.5; /* Mais translúcida no estado normal */
+    max-width: 140px; 
+    opacity: 0.5; 
     transition: opacity 0.3s, transform 0.3s;
-    filter: drop-shadow(0 0 10px rgba(0, 161, 255, 0.3)); /* Sombra azul para a logo */
+    filter: drop-shadow(0 0 10px rgba(0, 161, 255, 0.3)); 
 }
 #etec-logo:hover { 
-    opacity: 0.8; /* Mais visível no hover */
+    opacity: 0.8; 
     transform: scale(1.05);
     filter: drop-shadow(0 0 15px rgba(0, 161, 255, 0.6));
 }
 
 #result-buttons-container {
     display: flex;
-    gap: 30px; /* Mais espaço entre os botões */
-    margin-top: 20px; /* Um pouco mais de distância dos elementos acima */
+    gap: 30px; 
+    margin-top: 20px;
     animation: fadeInUp 2.5s forwards;
 }
 
 #restart-button,
 #view-all-results-button {
-    padding: 18px 35px; /* Botões um pouco maiores */
-    background: linear-gradient(#00A1FF, #0066b3); /* Gradiente mais forte */
-    border: 2px solid #00A1FF; /* Borda azul clara */
-    border-radius: 8px; /* Cantos um pouco mais arredondados */
+    padding: 18px 35px;
+    background: linear-gradient(#00A1FF, #0066b3);
+    border: 2px solid #00A1FF;
+    border-radius: 8px;
     color: #fff;
     font-family: var(--font-title);
-    font-size: 1.4em; /* Fonte maior nos botões */
+    font-size: 1.4em; 
     cursor: pointer;
-    transition: all 0.3s ease; /* Transição mais suave */
-    /* Múltiplas sombras para um brilho mais evidente nos botões */
+    transition: all 0.3s ease;
     box-shadow: 
         0 0 10px rgba(0, 161, 255, 0.5), 
         0 0 20px rgba(0, 161, 255, 0.3);
 }
 #restart-button:hover,
 #view-all-results-button:hover {
-    transform: translateY(-5px) scale(1.05); /* Efeito de elevação mais pronunciado */
-    /* Brilho maior no hover */
+    transform: translateY(-5px) scale(1.05); 
     box-shadow: 
         0 0 15px rgba(0, 161, 255, 0.8), 
         0 0 30px rgba(0, 161, 255, 0.6),
-        0 10px 40px rgba(0, 161, 255, 0.5); /* Sombra mais abaixo */
+        0 10px 40px rgba(0, 161, 255, 0.5); 
 }
 
-
-.hidden { display: none !important; }
-
-/* Animações de entrada para a tela de resultado (mantidas, mas podem ser ajustadas se necessário) */
+/* Animações de entrada para a tela de resultado */
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-40px); }
     to { opacity: 1; transform: translateY(0); }
@@ -418,3 +435,18 @@ body.fade-out {
     from { opacity: 0; transform: translateY(40px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+#objective-panel i,
+#inventory i {
+    stroke-width: 2; /* Espessura do traço do ícone */
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0; /* Impede que o ícone seja espremido */
+}
+
+#objective-panel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+

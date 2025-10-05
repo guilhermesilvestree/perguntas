@@ -8,6 +8,180 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+
+    <style>
+        /* tutorial-style.css embutido */
+
+        /* Camada de escurecimento e seus componentes */
+        #tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #tutorial-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* NOVA CLASSE: Esconde completamente o tutorial quando concluído */
+        #tutorial-overlay.tutorial-complete {
+            display: none;
+        }
+
+        /* Destaque (o "buraco" na camada escura) */
+        #tutorial-highlight {
+            position: absolute;
+            border-radius: 8px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
+        }
+
+        /* Caixa de diálogo do tutorial */
+        #tutorial-box {
+            position: absolute;
+            background-color: rgba(20, 22, 25, 0.95);
+            border: 1px solid #00A1FF;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 161, 255, 0.5), inset 0 0 20px rgba(0, 161, 255, 0.1);
+            color: #e0e0e0;
+            font-family: 'Roboto Mono', monospace;
+            max-width: 550px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            z-index: 1001;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: all;
+            overflow: hidden;
+        }
+
+        #tutorial-box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        /* Container circular da imagem do detetive */
+        .tutorial-image-container {
+            flex-shrink: 0;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #00A1FF;
+            background: linear-gradient(45deg, #00A1FF, #0066b3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 161, 255, 0.7);
+        }
+
+        .tutorial-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .tutorial-content {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        #tutorial-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #f0f0f0;
+        }
+
+        #tutorial-text strong {
+            color: #00E6FF;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 230, 255, 0.6);
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .tutorial-buttons button {
+            padding: 12px 25px;
+            background: linear-gradient(to top, #0077c2, #00A1FF);
+            border: 1px solid #00A1FF;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Special Elite', monospace;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 161, 255, 0.4), inset 0 1px 1px rgba(255,255,255,0.2);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+        
+        #tutorial-close {
+            background: linear-gradient(to top, #00A1FF, #00E6FF);
+            border-color: #00E6FF;
+        }
+
+        .tutorial-buttons button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 161, 255, 0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+        }
+
+        .tutorial-buttons button:active {
+            transform: translateY(-1px);
+        }
+
+        .tutorial-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            #tutorial-box {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                transform: none !important;
+                max-width: 90%;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .tutorial-content {
+                text-align: center;
+            }
+
+            .tutorial-buttons {
+                justify-content: center;
+            }
+            .tutorial-image-container img {
+                 object-position: center;
+            }
+        }
+    </style>
 </head> 
 <body>
     <div id="game-container">
@@ -66,7 +240,179 @@
             </div>
         </div>
     </div>
+    
+    <div id="tutorial-overlay">
+        <div id="tutorial-highlight"></div>
 
+        <div id="tutorial-box">
+            <div class="tutorial-image-container">
+                <img id="tutorial-detetive-image" src="" alt="Detetive"> 
+            </div>
+            <div class="tutorial-content">
+                <p id="tutorial-text"></p>
+                <div class="tutorial-buttons">
+                    <button id="tutorial-next">Próximo &rarr;</button>
+                    <button id="tutorial-close" class="tutorial-hidden">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script id="lucide-script" src="https://unpkg.com/lucide@latest"></script>
     <script type="module" src="script.js"></script>
+
+
+    <script>
+    // tutorial-script.js embutido
+    window.addEventListener('load', () => {
+
+        // --- LÓGICA PARA EXIBIR O TUTORIAL APENAS QUANDO NECESSÁRIO ---
+        const tutorialVisto = localStorage.getItem('tutorialVocacionalVisto');
+        const savedGameJSON = localStorage.getItem('vocationalGameState');
+        let jogoEmAndamento = false;
+
+        // Elementos do tutorial
+        const overlay = document.getElementById('tutorial-overlay');
+
+        if (savedGameJSON) {
+            try {
+                const savedGame = JSON.parse(savedGameJSON);
+                if (savedGame && savedGame.questionIndex > 0) {
+                    jogoEmAndamento = true;
+                }
+            } catch (e) {
+                console.error("Erro ao ler o estado do jogo salvo:", e);
+            }
+        }
+        
+        // CORREÇÃO: Se o tutorial já foi visto ou o jogo está em andamento,
+        // adiciona a classe que desativa o overlay com display:none e encerra o script.
+        if (tutorialVisto || jogoEmAndamento) {
+            overlay.classList.add('tutorial-complete');
+            return; 
+        }
+
+        const highlight = document.getElementById('tutorial-highlight');
+        const tutorialBox = document.getElementById('tutorial-box');
+        const tutorialText = document.getElementById('tutorial-text');
+        const tutorialDetetiveImage = document.getElementById('tutorial-detetive-image');
+        const nextBtn = document.getElementById('tutorial-next');
+        const closeBtn = document.getElementById('tutorial-close');
+
+        const inventoryPanel = document.getElementById('inventory');
+        const objectivePanel = document.getElementById('objective-panel');
+        
+        let currentStep = 0;
+
+        const tutorialSteps = [
+            {
+                targetElement: inventoryPanel,
+                imageSrc: 'assets/tutorial/detetive_neutro.png',
+                text: "Aqui são os <strong>Fragmentos</strong> que você coletará. Eles formam a <strong>Senha</strong> para avançar de fase.",
+                preferredBoxPosition: 'right' 
+            },
+            {
+                targetElement: objectivePanel,
+                imageSrc: 'assets/tutorial/detetive_anotando.png',
+                text: "Este painel mostra seu <strong>Novo Objetivo</strong>, uma <strong>Dica</strong> do que investigar a seguir.",
+                preferredBoxPosition: 'right' 
+            }
+        ];
+
+        function positionTutorialBox(targetRect, boxRect, preferredPosition) {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const padding = 20;
+            let boxTop, boxLeft;
+
+            if (targetRect.right + boxRect.width + padding < viewportWidth) {
+                boxLeft = targetRect.right + padding;
+                boxTop = targetRect.top + (targetRect.height / 2) - (boxRect.height / 2);
+            } 
+            else if (targetRect.left - boxRect.width - padding > 0) {
+                boxLeft = targetRect.left - boxRect.width - padding;
+                boxTop = targetRect.top + (targetRect.height / 2) - (boxRect.height / 2);
+            }
+            else if (targetRect.bottom + boxRect.height + padding < viewportHeight) {
+                boxTop = targetRect.bottom + padding;
+                boxLeft = targetRect.left + (targetRect.width / 2) - (boxRect.width / 2);
+            }
+            else if (targetRect.top - boxRect.height - padding > 0) {
+                boxTop = targetRect.top - boxRect.height - padding;
+                boxLeft = targetRect.left + (targetRect.width / 2) - (boxRect.width / 2);
+            }
+            else {
+                tutorialBox.style.position = 'fixed';
+                tutorialBox.style.top = '50%';
+                tutorialBox.style.left = '50%';
+                tutorialBox.style.transform = 'translate(-50%, -50%)';
+                return;
+            }
+
+            boxTop = Math.max(padding, Math.min(boxTop, viewportHeight - boxRect.height - padding));
+            boxLeft = Math.max(padding, Math.min(boxLeft, viewportWidth - boxRect.width - padding));
+
+            tutorialBox.style.top = boxTop + 'px';
+            tutorialBox.style.left = boxLeft + 'px';
+            tutorialBox.style.transform = 'none';
+            tutorialBox.style.position = 'absolute';
+        }
+
+        function showStep(stepIndex) {
+            const step = tutorialSteps[stepIndex];
+            if (!step || !step.targetElement) {
+                console.error("Passo do tutorial ou elemento alvo inválido:", step);
+                return;
+            }
+
+            overlay.classList.add('visible');
+            tutorialDetetiveImage.src = step.imageSrc;
+            tutorialText.innerHTML = step.text;
+
+            const targetRect = step.targetElement.getBoundingClientRect();
+            
+            const highlightPadding = 10;
+            highlight.style.width = (targetRect.width + highlightPadding) + 'px';
+            highlight.style.height = (targetRect.height + highlightPadding) + 'px';
+            highlight.style.top = (targetRect.top - (highlightPadding / 2)) + 'px';
+            highlight.style.left = (targetRect.left - (highlightPadding / 2)) + 'px';
+            
+            tutorialBox.style.visibility = 'hidden';
+            tutorialBox.style.position = 'fixed';
+            tutorialBox.style.top = '0';
+            tutorialBox.style.left = '0';
+            
+            tutorialBox.offsetWidth; 
+
+            const boxRect = tutorialBox.getBoundingClientRect();
+            
+            positionTutorialBox(targetRect, boxRect, step.preferredBoxPosition);
+
+            tutorialBox.style.visibility = 'visible';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentStep++;
+            if (currentStep < tutorialSteps.length) {
+                showStep(currentStep);
+            }
+            if (currentStep === tutorialSteps.length - 1) {
+                nextBtn.classList.add('tutorial-hidden');
+                closeBtn.classList.remove('tutorial-hidden');
+            }
+        });
+
+        // CORREÇÃO: Adiciona a classe 'tutorial-complete' ao fechar,
+        // garantindo que o overlay seja desativado com 'display: none'.
+        closeBtn.addEventListener('click', () => {
+            overlay.classList.remove('visible');
+            overlay.classList.add('tutorial-complete'); // Desativa completamente o overlay
+            localStorage.setItem('tutorialVocacionalVisto', 'true');
+        });
+
+        setTimeout(() => {
+           showStep(0);
+        }, 700); 
+    });
+    </script>
 </body>
 </html>
