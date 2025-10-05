@@ -909,7 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
           clearState();
           startGame();
         }
-      } catch (error) { // <-- MELHORIA ADICIONADA
+      } catch (error) {
           console.error("Falha ao ler o jogo salvo. Começando um novo.", error);
           clearState();
           startGame();
@@ -923,7 +923,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("fade-out");
     setTimeout(() => {
         clearState();
-        window.location.reload(); // Recarrega a página para um início limpo
     }, 500); // Espera a animação de fade-out terminar
   });
 
@@ -948,5 +947,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAndResumeGame();
 });
-
-// A CHAVE "}" EXTRA QUE ESTAVA AQUI FOI REMOVIDA.
