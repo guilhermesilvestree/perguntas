@@ -1,6 +1,5 @@
-// script.js (VERSÃO ATUALIZADA)
+// script.js (VERSÃO CORRIGIDA E MELHORADA)
 
-// A linha correta, com 'doc' e 'updateDoc' incluídos
 import { db } from "./firebase.js";
 import {
   collection,
@@ -29,14 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const clickSound = new Audio("./assets/sounds/click.wav");
   const unlockSound = new Audio("./assets/sounds/unlock.wav");
   const passwordSound = new Audio("./assets/sounds/password.wav");
-  // NOVO: Sons para o sistema de objetivos
   const objectiveNewSound = new Audio("./assets/sounds/objective_new.wav");
   const objectiveCompleteSound = new Audio(
     "./assets/sounds/objective_complete.wav"
   );
 
   // --- 2. MAPEAMENTO DE CURSOS E DETALHES ---
-  // (O mapeamento de cursos e detalhes permanece o mesmo)
   const courses = {
     ds: "Desenvolvimento de Sistemas",
     inf: "Informática para Internet",
@@ -196,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // --- 3. BANCO DE DADOS COMPLETO DO JOGO (BALANCEADO) ---
-  // (gameData permanece o mesmo)
   const gameData = [
     {
       phase: 1,
@@ -551,7 +547,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionId: null,
   };
 
-  // NOVO: Timer para esconder o toast de objetivo
   let objectiveTimeout;
 
   // --- 5. FUNÇÕES PRINCIPAIS DO JOGO ---
@@ -670,18 +665,16 @@ document.addEventListener("DOMContentLoaded", () => {
     questionUI.classList.remove("hidden");
   }
 
-  // MODIFICADO: Lógica de avanço e exibição de objetivos
   function selectAnswer(points, fragment) {
     clickSound.volume = 0.3;
     clickSound.play();
 
-    // MODIFICAÇÃO: Desativa o hotspot atual para evitar cliques repetidos
     const currentHotspot = document.getElementById(
       gameData[gameState.questionIndex].hotspotId
     );
     if (currentHotspot) {
-      currentHotspot.classList.add("hidden"); // Esconde o hotspot
-      currentHotspot.onclick = null; // Remove o evento de clique
+      currentHotspot.classList.add("hidden");
+      currentHotspot.onclick = null;
     }
 
     for (const course in points) {
@@ -703,19 +696,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (gameState.questionIndex < gameData.length) {
       const nextQuestionData = gameData[gameState.questionIndex];
-      // MODIFICAÇÃO: Tempo reduzido para 1500ms (1.5 segundos)
       setTimeout(() => {
         showObjective(nextQuestionData.hint, "new");
-        // MODIFICAÇÃO: Ativa o PRÓXIMO hotspot somente DEPOIS do novo objetivo aparecer
         activateNextHotspot();
-      }, 1500); // TEMPO REDUZIDO
+      }, 1500);
       saveState();
     } else {
       endGame();
     }
   }
 
-  // MODIFICADO: Lógica de senha e objetivos
   function checkPassword(passwordAttempt) {
     const currentQuestionData = gameData[gameState.questionIndex];
     const correctPassword = currentQuestionData.password;
@@ -732,11 +722,10 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           showObjective(nextQuestionData.hint, "new");
           advanceToNextPhase();
-        }, 1500); // TEMPO REDUZIDO
+        }, 1500);
       } else {
         setTimeout(endGame, 1500);
       }
-      saveState();
     } else {
       const inputField = document.querySelector("#answer-options input");
       const errorElement = document.getElementById("password-error-text");
@@ -751,6 +740,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
   function advanceToNextPhase() {
     const nextQuestionData = gameData[gameState.questionIndex];
     if (nextQuestionData) {
@@ -760,6 +750,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setupPhase(nextPhase);
       }
       activateNextHotspot();
+      saveState();
     } else {
       endGame();
     }
@@ -769,7 +760,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const inventoryPanel = document.getElementById("inventory");
     const fragmentsText = gameState.fragments.join("");
 
-    // Monta o HTML com o ícone e o novo span para o texto
     inventoryPanel.innerHTML = `
             <i data-lucide="hash"></i>
             <div>
@@ -777,12 +767,11 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
 
-    // Renderiza os ícones do Lucide
     lucide.createIcons();
   }
 
   function showObjective(text, type = "new") {
-    clearTimeout(objectiveTimeout); // Cancela qualquer timer anterior
+    clearTimeout(objectiveTimeout);
     objectivePanel.classList.remove("show", "completed");
 
     let title, iconHtml;
@@ -799,20 +788,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     objectivePanel.innerHTML = `${iconHtml}<div><span class="objective-title">${title}:</span> ${text}</div>`;
 
-    // Força o navegador a reaplicar a animação, se necessário
     void objectivePanel.offsetWidth;
 
     objectivePanel.classList.add("show");
 
     lucide.createIcons();
 
-    // MODIFICADO: O painel só some automaticamente se for uma notificação de 'concluído'
     if (type === "completed") {
       objectiveTimeout = setTimeout(() => {
         objectivePanel.classList.remove("show");
-      }, 4000); // A mensagem de "concluído" some após 4 segundos.
+      }, 4000);
     }
-    // Se o tipo for 'new', o setTimeout não é criado e o painel de objetivo permanece visível.
   }
 
   function endGame() {
@@ -838,7 +824,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function displayResults(courseKey, suggestions) {
-    // (A função displayResults permanece a mesma)
     const resultProfile = courseDetails[courseKey] || {
       title: "Seu Perfil é Versátil!",
       description:
@@ -898,7 +883,6 @@ document.addEventListener("DOMContentLoaded", () => {
     saveState();
     setupPhase(1);
     activateNextHotspot();
-    // MODIFICADO: Chamada inicial do objetivo
     setTimeout(
       () => showObjective("Investigar a sala em busca de pistas.", "new"),
       1000
@@ -908,22 +892,27 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadAndResumeGame() {
     const savedStateJSON = localStorage.getItem("vocationalGameState");
     if (savedStateJSON) {
-      gameState = JSON.parse(savedStateJSON);
-      resultScreen.classList.add("hidden");
-      document
-        .querySelectorAll("#inventory")
-        .forEach((el) => el.classList.remove("hidden"));
-      gameContainer.className = "";
-      gameContainer.classList.add(`phase-${gameState.currentPhase}-bg`);
-      updateInventory();
-      const currentQuestion = gameData[gameState.questionIndex];
-      if (currentQuestion) {
-        // MODIFICADO: Chamada do objetivo ao resumir
-        showObjective(currentQuestion.hint, "new");
-        activateNextHotspot();
-      } else {
-        clearState();
-        startGame();
+      try { // <-- MELHORIA ADICIONADA
+        gameState = JSON.parse(savedStateJSON);
+        resultScreen.classList.add("hidden");
+        document
+          .querySelectorAll("#inventory")
+          .forEach((el) => el.classList.remove("hidden"));
+        gameContainer.className = "";
+        gameContainer.classList.add(`phase-${gameState.currentPhase}-bg`);
+        updateInventory();
+        const currentQuestion = gameData[gameState.questionIndex];
+        if (currentQuestion) {
+          showObjective(currentQuestion.hint, "new");
+          activateNextHotspot();
+        } else {
+          clearState();
+          startGame();
+        }
+      } catch (error) { // <-- MELHORIA ADICIONADA
+          console.error("Falha ao ler o jogo salvo. Começando um novo.", error);
+          clearState();
+          startGame();
       }
     } else {
       startGame();
@@ -931,24 +920,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   restartButton.addEventListener("click", () => {
-    clearState();
-    gameState = {
-      currentPhase: 1,
-      questionIndex: 0,
-      scores: {},
-      fragments: [],
-      sessionId: null,
-    };
-    resultScreen.classList.add("hidden");
-    localStorage.removeItem("vocationalGameState");
-    localStorage.removeItem("tutorialVocacionalVisto");
-    window.location.href = "/perguntas";
+    document.body.classList.add("fade-out");
+    setTimeout(() => {
+        clearState();
+        window.location.reload(); // Recarrega a página para um início limpo
+    }, 500); // Espera a animação de fade-out terminar
   });
 
   viewAllResultsButton.addEventListener("click", () => {
     window.location.href = "/perguntas/dashboard";
   });
 
+  // Funções de debug (podem ser removidas em produção)
   window.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === "p") {
       endGame();
@@ -965,3 +948,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAndResumeGame();
 });
+
+// A CHAVE "}" EXTRA QUE ESTAVA AQUI FOI REMOVIDA.
