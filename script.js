@@ -923,6 +923,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("fade-out");
     setTimeout(() => {
         clearState();
+        window.location.href = "/perguntas";
     }, 500); // Espera a animação de fade-out terminar
   });
 
