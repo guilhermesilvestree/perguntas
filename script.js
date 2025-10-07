@@ -884,7 +884,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupPhase(1);
     activateNextHotspot();
     setTimeout(
-      () => showObjective("Investigar a sala em busca de pistas.", "new"),
+      () => showObjective("O sofá parece ter algo!", "new"),
       1000
     );
   }
